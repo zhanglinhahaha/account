@@ -17,8 +17,6 @@ import com.miniapp.account.service.AccountService;
 
 public class MainActivity extends BaseActivity {
     private static final String TAG = "AccountMainActivity";
-    private static final String ACCOUNT_SERVICE_PK = "com.miniapp.account";
-    private static final String ACCOUNT_SERVICE_CS = "com.miniapp.account.service.AccountService";
     private AccountItemDb databaseHelper = null;
     private Context mContext = null;
     private AccountService mAccountService = null;
@@ -29,14 +27,7 @@ public class MainActivity extends BaseActivity {
         setContentView(R.layout.activity_main);
         mContext = this;
         sqlTest();
-        if(mAccountService == null) startAccountService();
-    }
-
-    private void startAccountService() {
-        LogUtil.v(TAG, "startAccountService");
-        Intent intent = new Intent();
-        intent.setComponent(new ComponentName(ACCOUNT_SERVICE_PK, ACCOUNT_SERVICE_CS));
-        mContext.startService(intent);
+        mAccountService = AccountService.getService(this);
     }
 
     @Override

@@ -3,6 +3,7 @@ package com.miniapp.account.activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import com.miniapp.account.LogUtil;
 
 /**
  * Created by zl on 20-11-27.
@@ -33,28 +34,24 @@ public class LoginUtil {
         return mInstance;
     }
 
-    public SharedPreferences.Editor getEditor() {
-        return mEditor;
+    public void setLoginSettings(String username, String password, Boolean isRemember) {
+        LogUtil.d(TAG, "setLoginSettings() called with: username = [" + username + "], password = [" + password + "], isRemember = [" + isRemember + "]");
+        if(username != null) mEditor.putString(LOGIN_USERNAME, username);
+        if(password != null) mEditor.putString(LOGIN_PASSWORD, password);
+        if(isRemember != null) mEditor.putBoolean(LOGIN_REMEMBER_PASSWORD, isRemember);
+        mEditor.apply();
     }
+
 
     public String getLoginUsername() {
         return mPreferences.getString(LOGIN_USERNAME, "");
-    }
-    public void setLoginUsername(String username) {
-        mEditor.putString(LOGIN_USERNAME, username);
     }
 
     public String getLoginPassword() {
         return mPreferences.getString(LOGIN_PASSWORD, "");
     }
-    public void setLoginPassword(String password) {
-        mEditor.putString(LOGIN_PASSWORD, password);
-    }
 
     public Boolean getLoginRememberPassword() {
         return mPreferences.getBoolean(LOGIN_REMEMBER_PASSWORD, false);
-    }
-    public void setLoginRememberPassword(Boolean isRe) {
-        mEditor.putBoolean(LOGIN_REMEMBER_PASSWORD, isRe);
     }
 }

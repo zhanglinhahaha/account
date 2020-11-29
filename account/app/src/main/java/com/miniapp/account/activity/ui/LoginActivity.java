@@ -9,6 +9,7 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.miniapp.account.ActivityCollector;
 import com.miniapp.account.MainActivity;
 import com.miniapp.account.R;
 
@@ -63,16 +64,13 @@ public class LoginActivity extends BaseActivity {
                 if(account.equals("admin") && password.equals("123456")) {
 
                     if(rememberPass.isChecked()) {
-                        mLoginUtil.setLoginPassword(password);
-                        mLoginUtil.setLoginUsername(account);
-                        mLoginUtil.setLoginRememberPassword(true);
+                        mLoginUtil.setLoginSettings(account, password, true);
                     }else {
-                        mLoginUtil.setLoginRememberPassword(false);
-                        //mLoginUtil.getEditor().clear();
+                        mLoginUtil.setLoginSettings(null, null, false);
                     }
-                    mLoginUtil.getEditor().apply();
                     gotoMainActivity();
                 }else {
+                    LogUtil.e(TAG,  "account or password is error");
                     Toast.makeText(mContext,"account or password is error",
                             Toast.LENGTH_SHORT).show();
                 }
@@ -84,5 +82,11 @@ public class LoginActivity extends BaseActivity {
         Intent intent = new Intent(mContext, MainActivity.class);
         startActivity(intent);
         finish();
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        ActivityCollector.finishAll();
     }
 }

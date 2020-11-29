@@ -9,7 +9,7 @@ import android.util.Log;
  * 当level=NOTHING，日志全部不打印
  */
 public class LogUtil {
-    private static final String TAG = "zl_miniApp_LogUtil";
+    private static final String TAG = "zl_Account_LogUtil";
 
     public static final int VERBOSE = 1;
     public static final int DEBUG = 2;
