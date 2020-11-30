@@ -20,7 +20,7 @@ public class AccountBroadcastReceiver extends BroadcastReceiver {
         if(action.equals(BroadcastUtil.FORCE_OFFLINE)) {
             Intent intent1 = new Intent();
             intent1.setClassName(AccountConstants.ACCOUNT_PACKAGE, AccountConstants.ACTIVITY_ACCOUNT_DIALOG);
-            intent1.putExtra(AccountConstants.DIALOG_BUTTON_NUMBER, 1);
+            intent1.putExtra(AccountConstants.DIALOG_TYPE, AccountConstants.DIALOG_TYPE_LOGOUT);
             intent1.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             context.startActivity(intent1);
         }

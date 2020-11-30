@@ -16,19 +16,31 @@ public class AccountDialog extends BaseActivity {
     private static final String TAG = "AccountDialog";
     private AlertDialog mDialog = null;
     private Context mContext = null;
+    private int mDialogType = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_account_dialog);
+        LogUtil.v(TAG, "onCreate");
         mContext = this;
-        int buttonNum = getIntent().getIntExtra(AccountConstants.DIALOG_BUTTON_NUMBER, 0);
-        switch (buttonNum) {
-            case 1:
-                showOneButtonDialog();
+        mDialogType = getIntent().getIntExtra(AccountConstants.DIALOG_TYPE, 0);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        LogUtil.v(TAG, "onResume");
+        initOnResume();
+    }
+
+    private void initOnResume() {
+        switch (mDialogType) {
+            case AccountConstants.DIALOG_TYPE_LOGOUT:
+                showLogOutDiag();
                 break;
             default:
-                LogUtil.e("error num");
+                break;
         }
     }
 
@@ -42,23 +54,23 @@ public class AccountDialog extends BaseActivity {
         }
     }
 
-    private void showOneButtonDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(mContext, R.style.AlertDialogCustom);
-        builder.setTitle("Warning");
-        builder.setMessage("You are force to be offline. Please try to login again.");
+    private void showLogOutDiag() {
+        LogUtil.v(TAG, "showLogOutDiag");
+        AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+        builder.setTitle(R.string.dialog_warning_title);
+        builder.setMessage(R.string.dialog_logout_msg);
         builder.setCancelable(false);
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+        builder.setNegativeButton(R.string.dialog_button_yes, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                ActivityCollector.finishAll();
                 LoginUtil.getInstance(mContext).setLoginSettings(null, null, false);;
                 LogUtil.d(TAG, "1 " + LoginUtil.getInstance(mContext).getLoginRememberPassword());
                 Intent intent1 = new Intent(mContext, LoginActivity.class);
                 mContext.startActivity(intent1);
-                finish();
+                ActivityCollector.finishAll();
             }
         });
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(R.string.dialog_button_no, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 finish();

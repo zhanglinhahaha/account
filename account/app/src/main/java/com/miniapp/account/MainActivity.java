@@ -16,10 +16,9 @@ import com.miniapp.account.db.AccountItemDb;
 import com.miniapp.account.service.AccountService;
 
 public class MainActivity extends BaseActivity {
-    private static final String TAG = "AccountMainActivity";
+    private static final String TAG = "AccountMain";
     private AccountItemDb databaseHelper = null;
     private Context mContext = null;
-    private AccountService mAccountService = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,24 +26,6 @@ public class MainActivity extends BaseActivity {
         setContentView(R.layout.activity_main);
         mContext = this;
         sqlTest();
-        mAccountService = AccountService.getService(this);
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main,menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.logout:
-                mContext.sendBroadcast(new Intent(BroadcastUtil.FORCE_OFFLINE));
-                break;
-            default:
-        }
-        return true;
     }
 
     private void sqlTest() {

@@ -79,14 +79,8 @@ public class LoginActivity extends BaseActivity {
     }
 
     private void gotoMainActivity() {
-        Intent intent = new Intent(mContext, MainActivity.class);
+        Intent intent = new Intent(mContext, AccountMainActivity.class);
         startActivity(intent);
         finish();
-    }
-
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        ActivityCollector.finishAll();
     }
 }

@@ -2,6 +2,9 @@
     <string name="app_name">Account</string>
     <string name="logout">Logout</string>
 
-    <string name="dialog_title" translatable="false">Warning</string>
-    <string name="dialog_msg" translatable="false">You are force to be offline. Please try to login again.</string>
+    <!--Popup string-->
+    <string name="dialog_warning_title">Warning</string>
+    <string name="dialog_logout_msg">Do you want to logout?</string>
+    <string name="dialog_button_yes">Yes</string>
+    <string name="dialog_button_no">No</string>
 </resources>
