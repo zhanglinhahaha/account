@@ -21,7 +21,9 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".activity.ui.AccountDialog" />
+        <activity android:name=".activity.ui.AccountDialog"
+            android:theme="@style/AccountDialog"/>
+
         <activity android:name=".activity.ui.BaseActivity" />
         <activity android:name=".MainActivity" />
 
