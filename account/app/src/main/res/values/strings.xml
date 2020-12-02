@@ -7,4 +7,12 @@
     <string name="dialog_logout_msg">Do you want to logout?</string>
     <string name="dialog_button_yes">Yes</string>
     <string name="dialog_button_no">No</string>
+
+    <!--Account Db-->
+    <string name="db_username">Username</string>
+    <string name="db_price">Price</string>
+    <string name="db_comment">Comment</string>
+    <string name="db_date">date</string>
+    <string name="db_add">Add</string>
+
 </resources>

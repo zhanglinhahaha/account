@@ -2,11 +2,13 @@ package com.miniapp.account.db;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import com.miniapp.account.LogUtil;
+import com.miniapp.account.service.AccountService;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -28,6 +30,7 @@ public class AccountItemDb extends SQLiteOpenHelper {
 
     private Context mContext = null;
     private SQLiteDatabase database = this.getWritableDatabase();
+    private Cursor cursor = null;
 
     public static final String CREATE_ACCOUNT = "create table " + TABLE_ACCOUNT + " ("
             + ID + " integer primary key autoincrement, "
@@ -64,6 +67,11 @@ public class AccountItemDb extends SQLiteOpenHelper {
         LogUtil.d(TAG, "insert: ");
     }
 
+    public void insert(ContentValues values) {
+        database.insert(TABLE_ACCOUNT, null, values);
+        LogUtil.d(TAG, "insert values:");
+    }
+
     public void update(){
         ContentValues values = new ContentValues();
         values.put(ACCOUNT_ITEM_PRICE, 25);
@@ -76,6 +84,12 @@ public class AccountItemDb extends SQLiteOpenHelper {
         database.delete(TABLE_ACCOUNT, ACCOUNT_ITEM_COMMENT + " = ?",
                 new String[]{"eat lunch"});
         LogUtil.d(TAG, "delete: ");
+    }
+
+    public void delete(Integer id){
+        database.delete(TABLE_ACCOUNT, ID + " = ?",
+                new String[]{""+id});
+        LogUtil.d(TAG, "delete: " + id);
     }
 
     public void queryForUser(String user, String month) {
@@ -95,5 +109,11 @@ public class AccountItemDb extends SQLiteOpenHelper {
             }while (cursor.moveToNext());
         }
         cursor.close();
+    }
+
+    public Cursor getCursor() {
+        Cursor cursor = database.query(TABLE_ACCOUNT, null, null ,
+                null, null, null, null);
+        return cursor;
     }
 }

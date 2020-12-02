@@ -2,10 +2,13 @@ package com.miniapp.account.activity.ui;
 
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ListView;
+import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -13,14 +16,16 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
-import com.google.android.material.snackbar.Snackbar;
 
 import com.miniapp.account.LogUtil;
 import com.miniapp.account.R;
-import com.miniapp.account.activity.LoginUtil;
+import com.miniapp.account.activity.AccountCursorAdapter;
 import com.miniapp.account.broadcast.BroadcastUtil;
+import com.miniapp.account.db.AccountItemDb;
 import com.miniapp.account.service.AccountService;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -41,6 +46,11 @@ public class AccountMainActivity extends BaseActivity {
     private TextView mUserName = null;
     private TextView mUserMail = null;
 
+    private ListView mContentsList = null;
+    private SimpleCursorAdapter mAdapter = null;
+    private AccountItemDb databaseHelper = null;
+    private SwipeRefreshLayout swipeRefresh = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,6 +62,9 @@ public class AccountMainActivity extends BaseActivity {
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         mNavigationView = (NavigationView) findViewById(R.id.nav_view);
         mfab = (FloatingActionButton)findViewById(R.id.fab);
+
+        mContentsList = (ListView) findViewById(R.id.itemList);
+        swipeRefresh = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh);
     }
 
     @Override
@@ -78,13 +91,79 @@ public class AccountMainActivity extends BaseActivity {
         mHeaderView = mNavigationView.getHeaderView(0);
         mUserImage = (CircleImageView) mHeaderView.findViewById(R.id.icon_image);
         mUserImage.setOnClickListener(mButtonClickListener);
-//        mUserName = (TextView) mHeaderView.findViewById(R.id.username);
-//        mUserName.setText(LoginUtil.getInstance(mContext).getLoginUsername());
-//        mUserMail = (TextView) mHeaderView.findViewById(R.id.mail);
-//        mUserMail.setText(LoginUtil.getInstance(mContext).getLoginPassword());
 
         mfab.setOnClickListener(mButtonClickListener);
+
+        swipeRefresh.setColorSchemeResources(R.color.colorPrimary);
+        swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                refresh();
+            }
+        });
+
+        makeContents();
     }
+
+    private void makeContents() {
+        LogUtil.v(TAG,"makeContents()");
+        databaseHelper = new AccountItemDb(this);
+        Cursor cursor = databaseHelper.getCursor();
+        try {
+            if (databaseHelper.getCursor().getCount() == 0) {
+                mContentsList.setVisibility(View.INVISIBLE);
+            } else {
+                mContentsList.setVisibility(View.VISIBLE);
+
+                String[] from = new String[] { AccountItemDb.ACCOUNT_ITEM_USERNAME };
+                int[] to = new int[] { R.id.row_name };
+
+                mAdapter = new AccountCursorAdapter(this, R.layout.row_account, databaseHelper.getCursor(), from,
+                        to, mListVewItemClickListener);
+
+                mContentsList.setAdapter(mAdapter);
+                //mContentsList.setItemsCanFocus(true);
+            }
+        }catch (Exception e) {
+            LogUtil.e(TAG, "cursor == null" + (cursor == null));
+            e.printStackTrace();
+        }
+    }
+
+    private void refresh() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Thread.sleep(2000);
+                }catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        swipeRefresh.setRefreshing(false);
+                    }
+                });
+            }
+        }).start();
+    }
+
+    private View.OnClickListener mListVewItemClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            switch (v.getId()) {
+                case R.id.btn_delete:
+                    Integer mDeleteDbId = Integer.valueOf(v.getTag().toString());
+                    LogUtil.d(TAG,"onClick cancel button , mDeleteDbId = " + mDeleteDbId);
+                    databaseHelper.delete(mDeleteDbId);
+                    makeContents();
+                    break;
+                default:
+                    break;
+            }
+        }
+    };
 
     @Override
     protected void onDestroy() {
@@ -118,6 +197,8 @@ public class AccountMainActivity extends BaseActivity {
             LogUtil.d(TAG, "mButtonClickListener called: " + v.toString());
             switch (v.getId()) {
                 case R.id.fab:
+                    Intent intent = new Intent(mContext, AccountAddItemActivity.class);
+                    startActivity(intent);
 //                    Snackbar.make(v, "Data Deleted", Snackbar.LENGTH_SHORT)
 //                            .setAction("Undo", new View.OnClickListener() {
 //                                @Override

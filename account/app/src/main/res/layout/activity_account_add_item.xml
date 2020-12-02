@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TableRow
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:textSize="18sp"
+            android:text="@string/db_username"
+            android:textAllCaps="false"
+            android:textAlignment="center" />
+
+        <EditText
+            android:id="@+id/db_username"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_gravity="center_vertical"
+            android:singleLine="true" />
+
+    </TableRow>
+
+    <TableRow
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:textSize="18sp"
+            android:text="@string/db_price"
+            android:textAllCaps="false"
+            android:textAlignment="center"/>
+
+        <EditText
+            android:id="@+id/db_price"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_gravity="center_vertical"
+            android:inputType="numberDecimal"
+            android:singleLine="true"/>
+    </TableRow>
+
+    <TableRow
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:textSize="18sp"
+            android:text="@string/db_comment"
+            android:textAllCaps="false"
+            android:textAlignment="center"/>
+
+        <EditText
+            android:id="@+id/db_comment"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_gravity="center_vertical"
+            android:singleLine="true"/>
+    </TableRow>
+
+    <TableRow
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:textSize="18sp"
+            android:text="@string/db_date"
+            android:textAllCaps="false"
+            android:textAlignment="center"/>
+
+        <EditText
+            android:id="@+id/db_date"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_gravity="center_vertical"
+            android:singleLine="true"/>
+    </TableRow>
+
+    <Button
+        android:id="@+id/db_add"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:text="@string/db_add"
+        android:textAllCaps="false"/>
+
+
+</TableLayout>

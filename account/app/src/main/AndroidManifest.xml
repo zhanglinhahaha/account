@@ -9,9 +9,12 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".activity.ui.AccountAddItemActivity">
 
-        <activity android:name=".activity.ui.AccountMainActivity">
+        </activity>
 
+        <activity android:name=".activity.ui.AccountMainActivity"
+            android:launchMode="singleTask">
         </activity>
 
         <activity android:name=".activity.ui.LoginActivity">
@@ -21,10 +24,11 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".activity.ui.AccountDialog"
-            android:theme="@style/AccountDialog"/>
-
+        <activity
+            android:name=".activity.ui.AccountDialog"
+            android:theme="@style/AccountDialog" />
         <activity android:name=".activity.ui.BaseActivity" />
+
         <activity android:name=".MainActivity" />
 
         <receiver android:name=".broadcast.AccountBroadcastReceiver" />
