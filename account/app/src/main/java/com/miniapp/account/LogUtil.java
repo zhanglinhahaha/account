@@ -38,7 +38,7 @@ public class LogUtil {
     }
     public static void d(String tag, String msg) {
         if(mLevel <= DEBUG) {
-            Log.v(tag, msg);
+            Log.d(tag, msg);
         }
     }
 
@@ -47,7 +47,7 @@ public class LogUtil {
     }
     public static void i(String tag, String msg) {
         if(mLevel <= INFO) {
-            Log.v(tag, msg);
+            Log.i(tag, msg);
         }
     }
 
@@ -56,7 +56,7 @@ public class LogUtil {
     }
     public static void w(String tag, String msg) {
         if(mLevel <= WARN) {
-            Log.v(tag, msg);
+            Log.w(tag, msg);
         }
     }
 
@@ -65,7 +65,7 @@ public class LogUtil {
     }
     public static void e(String tag, String msg) {
         if(mLevel <= ERROR) {
-            Log.v(tag, msg);
+            Log.e(tag, msg);
         }
     }
 }

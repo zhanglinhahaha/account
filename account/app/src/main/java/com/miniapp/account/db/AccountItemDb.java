@@ -8,9 +8,6 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import com.miniapp.account.LogUtil;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 /**
  * Created by zl on 20-4-30.
  */
@@ -76,25 +73,6 @@ public class AccountItemDb extends SQLiteOpenHelper {
             cursor.moveToFirst();
         }
         return cursor;
-    }
-
-    public void queryForUser(String user, String month) {
-    }
-
-    public void queryForAll() {
-        Cursor cursor = database.query(TABLE_ACCOUNT, null, null ,
-                null, null, null, null);
-        if(cursor.moveToFirst()) {
-            do {
-                String user = cursor.getString(cursor.getColumnIndex(ACCOUNT_ITEM_USERNAME));
-                String price = cursor.getString(cursor.getColumnIndex(ACCOUNT_ITEM_PRICE));
-                String comment = cursor.getString(cursor.getColumnIndex(ACCOUNT_ITEM_COMMENT));
-                String date = cursor.getString(cursor.getColumnIndex(ACCOUNT_ITEM_DATE));
-                LogUtil.d(TAG, user + " " + price +
-                        " " + comment + " " + date);
-            }while (cursor.moveToNext());
-        }
-        cursor.close();
     }
 
     public Cursor getCursor() {

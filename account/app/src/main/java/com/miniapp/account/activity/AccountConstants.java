@@ -18,4 +18,5 @@ public class AccountConstants {
     public static final String DIALOG_TYPE = "dialog_type";
     public static final int DIALOG_TYPE_LOGOUT = 0x01;
 
+    public static final String EXTERNAL_FILE_PATH = "/storage/emulated/0/miniAccount/account.xml";
 }

@@ -1,8 +1,11 @@
 package com.miniapp.account.activity.ui;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -14,6 +17,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -26,6 +31,8 @@ import com.miniapp.account.R;
 import com.miniapp.account.activity.AccountCursorAdapter;
 import com.miniapp.account.broadcast.BroadcastUtil;
 import com.miniapp.account.db.AccountItemDb;
+import com.miniapp.account.db.DbToXmlManager;
+import com.miniapp.account.db.XmlToDbManager;
 import com.miniapp.account.service.AccountService;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -184,11 +191,33 @@ public class AccountMainActivity extends BaseActivity {
                 mDrawerLayout.openDrawer(GravityCompat.START);
                 break;
             case R.id.back:
+                applyForPermission();
+                DbToXmlManager exportFile = new DbToXmlManager(mContext);
+                exportFile.start("z");
+                break;
             case R.id.delete:
+                applyForPermission();
+                XmlToDbManager importFile = new XmlToDbManager(mContext);
+                importFile.start("z");
+                makeContents();
             case R.id.settings:
             default:break;
         }
         return true;
+    }
+
+    private void applyForPermission() {
+        if (Build.VERSION.SDK_INT >= 23) {
+            int REQUEST_CODE_CONTACT = 101;
+            String[] permissions = {Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE};
+            //验证是否许可权限
+            for (String str : permissions) {
+                if (this.checkSelfPermission(str) != PackageManager.PERMISSION_GRANTED) {
+                    //申请权限
+                    this.requestPermissions(permissions, REQUEST_CODE_CONTACT);
+                }
+            }
+        }
     }
 
     private View.OnClickListener mButtonClickListener = new View.OnClickListener() {

@@ -23,6 +23,10 @@ public class AccountBroadcastReceiver extends BroadcastReceiver {
             intent1.putExtra(AccountConstants.DIALOG_TYPE, AccountConstants.DIALOG_TYPE_LOGOUT);
             intent1.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             context.startActivity(intent1);
+        } else if(action.equals("zltext")) {
+            Intent intent1 = new Intent("com.hkmc.telematics.apps.Vrm.settings.ui.ServiceActivationPopUp");
+            intent1.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_NO_ANIMATION);
+            context.startActivity(intent1);
         }
     }
 }
