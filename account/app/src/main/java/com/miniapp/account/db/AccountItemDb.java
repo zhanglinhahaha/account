@@ -2,13 +2,11 @@ package com.miniapp.account.db;
 
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import com.miniapp.account.LogUtil;
-import com.miniapp.account.service.AccountService;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -55,41 +53,29 @@ public class AccountItemDb extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public void insert(String user, double price, String comment) {
-        Date date = new Date();
-        SimpleDateFormat dateFormat= new SimpleDateFormat("yyyy-MM-dd");
-        ContentValues values = new ContentValues();
-        values.put(ACCOUNT_ITEM_USERNAME, user);
-        values.put(ACCOUNT_ITEM_PRICE, price);
-        values.put(ACCOUNT_ITEM_COMMENT, comment);
-        values.put(ACCOUNT_ITEM_DATE, dateFormat.format(date));
-        database.insert(TABLE_ACCOUNT, null, values);
-        LogUtil.d(TAG, "insert: ");
-    }
-
     public void insert(ContentValues values) {
         database.insert(TABLE_ACCOUNT, null, values);
         LogUtil.d(TAG, "insert values:");
     }
 
-    public void update(){
-        ContentValues values = new ContentValues();
-        values.put(ACCOUNT_ITEM_PRICE, 25);
-        database.update(TABLE_ACCOUNT, values, ACCOUNT_ITEM_USERNAME + " = ?",
-                new String[]{"zhanglin"});
-        LogUtil.d(TAG, "update: ");
-    }
-
-    public void delete(){
-        database.delete(TABLE_ACCOUNT, ACCOUNT_ITEM_COMMENT + " = ?",
-                new String[]{"eat lunch"});
-        LogUtil.d(TAG, "delete: ");
+    public void update(ContentValues values, Integer id){
+        database.update(TABLE_ACCOUNT, values, ID + " = ?",
+                new String[]{""+id});
+        LogUtil.d(TAG, "update: " + id);
     }
 
     public void delete(Integer id){
         database.delete(TABLE_ACCOUNT, ID + " = ?",
                 new String[]{""+id});
         LogUtil.d(TAG, "delete: " + id);
+    }
+
+    public Cursor query(Integer id) {
+        Cursor cursor = database.query(TABLE_ACCOUNT,null, ID + " = ?", new String[] {""+id}, null, null, null);
+        if(cursor != null) {
+            cursor.moveToFirst();
+        }
+        return cursor;
     }
 
     public void queryForUser(String user, String month) {

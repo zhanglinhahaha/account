@@ -4,6 +4,7 @@ import android.app.DatePickerDialog;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
@@ -11,15 +12,14 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.Toast;
-
 import java.util.Calendar;
 
 import com.miniapp.account.LogUtil;
 import com.miniapp.account.R;
+import com.miniapp.account.activity.AccountConstants;
 import com.miniapp.account.db.AccountItemDb;
 
-public class AccountAddItemActivity extends BaseActivity {
+public class AccountAddOrUpdateActivity extends BaseActivity {
     private static final String TAG = "AccountAddItemActivity";
     private Context mContext = null;
 
@@ -29,6 +29,9 @@ public class AccountAddItemActivity extends BaseActivity {
     private EditText mDate = null;
     private Button mAddButton = null;
     private ContentValues mContentValues = null;
+    private int mAddOrUpdate = 0;
+
+    AccountItemDb databaseHelper = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +44,9 @@ public class AccountAddItemActivity extends BaseActivity {
         mComment = (EditText) findViewById(R.id.db_comment);
         mDate = (EditText) findViewById(R.id.db_date);
         mAddButton = (Button) findViewById(R.id.db_add);
+
+        mAddOrUpdate = getIntent().getIntExtra(AccountConstants.ADD_OR_UPDATE_TYPE, 0);
+        databaseHelper = new AccountItemDb(mContext);
     }
 
     @Override
@@ -51,6 +57,9 @@ public class AccountAddItemActivity extends BaseActivity {
     }
 
     private void initOnResume() {
+
+        if(mAddOrUpdate != 0) makeContent();
+
         mAddButton.setOnClickListener(mClickListener);
         mDate.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -73,6 +82,23 @@ public class AccountAddItemActivity extends BaseActivity {
                 return false;
             }
         });
+    }
+
+    private void makeContent() {
+        LogUtil.v(TAG, "makeContent");
+        mAddButton.setText(R.string.db_update);
+        Cursor cursor = databaseHelper.query(mAddOrUpdate);
+        if(cursor.getCount() != 0 ) {
+            String name = cursor.getString(cursor.getColumnIndex(AccountItemDb.ACCOUNT_ITEM_USERNAME));
+            String comment = cursor.getString(cursor.getColumnIndex(AccountItemDb.ACCOUNT_ITEM_COMMENT));
+            String date = cursor.getString(cursor.getColumnIndex(AccountItemDb.ACCOUNT_ITEM_DATE));
+            double price = cursor.getDouble(cursor.getColumnIndex(AccountItemDb.ACCOUNT_ITEM_PRICE));
+            LogUtil.d(TAG, " date =" + date + " ,name  = " + name + ", comment = " + comment + ", price = " + price);
+            mUsername.setText(name);
+            mPrice.setText(""+price);
+            mDate.setText(date);
+            mComment.setText(comment);
+        }
     }
 
     private View.OnClickListener mClickListener = new View.OnClickListener() {
@@ -138,8 +164,11 @@ public class AccountAddItemActivity extends BaseActivity {
         mContentValues.put(AccountItemDb.ACCOUNT_ITEM_DATE, date);
         LogUtil.d(TAG, mContentValues.toString());
 
-        AccountItemDb databaseHelper = new AccountItemDb(this);
-        databaseHelper.insert(mContentValues);
+        if(mAddOrUpdate == 0) {
+            databaseHelper.insert(mContentValues);
+        }else {
+            databaseHelper.update(mContentValues, mAddOrUpdate);
+        }
 
         Intent intent = new Intent(mContext, AccountMainActivity.class);
         startActivity(intent);

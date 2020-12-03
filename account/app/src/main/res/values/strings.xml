@@ -14,5 +14,6 @@
     <string name="db_comment">Comment</string>
     <string name="db_date">date</string>
     <string name="db_add">Add</string>
+    <string name="db_update">Update</string>
 
 </resources>

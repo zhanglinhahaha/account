@@ -60,7 +60,7 @@ public class AccountDialog extends BaseActivity {
         builder.setTitle(R.string.dialog_warning_title);
         builder.setMessage(R.string.dialog_logout_msg);
         builder.setCancelable(false);
-        builder.setNegativeButton(R.string.dialog_button_yes, new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(R.string.dialog_button_yes, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 LoginUtil.getInstance(mContext).setLoginSettings(null, null, false);;
@@ -70,7 +70,7 @@ public class AccountDialog extends BaseActivity {
                 ActivityCollector.finishAll();
             }
         });
-        builder.setPositiveButton(R.string.dialog_button_no, new DialogInterface.OnClickListener() {
+        builder.setNegativeButton(R.string.dialog_button_no, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 finish();

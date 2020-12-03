@@ -1,6 +1,7 @@
 package com.miniapp.account.activity;
 
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -49,10 +50,10 @@ public class AccountCursorAdapter extends SimpleCursorAdapter {
             String comment = mCursor.getString(mCursor.getColumnIndex(AccountItemDb.ACCOUNT_ITEM_COMMENT));
             String date = mCursor.getString(mCursor.getColumnIndex(AccountItemDb.ACCOUNT_ITEM_DATE));
             double price = mCursor.getDouble(mCursor.getColumnIndex(AccountItemDb.ACCOUNT_ITEM_PRICE));
-            LogUtil.d(TAG, " getview pos =" + position + " ,name  = " + name + ", date = " + date + ", price = " + price);
+            LogUtil.d(TAG, " getview pos =" + position + " ,name  = " + name + ", comment = " + comment + ", price = " + price);
             mViewHolder.txtViewName.setText(name);
-            mViewHolder.txtViewComment.setText(comment);
-            mViewHolder.txtPrice.setText(""+price);
+//            mViewHolder.txtViewComment.setText(comment);
+//            mViewHolder.txtPrice.setText(""+price);
             mViewHolder.txtTime.setText(date);
 
             final int id = mCursor.getInt(mCursor.getColumnIndex(AccountItemDb.ID));
@@ -61,6 +62,11 @@ public class AccountCursorAdapter extends SimpleCursorAdapter {
                 @Override
                 public void onClick(View v) {
                     LogUtil.d(TAG,"_id = " + id);
+                    Intent intent1 = new Intent();
+                    intent1.setClassName(AccountConstants.ACCOUNT_PACKAGE, AccountConstants.ACTIVITY_ACCOUNT_ADD_OR_UPDATE);
+                    intent1.putExtra(AccountConstants.ADD_OR_UPDATE_TYPE, id);
+                    intent1.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    mContext.startActivity(intent1);
                 }
             });
         }
@@ -80,8 +86,8 @@ public class AccountCursorAdapter extends SimpleCursorAdapter {
 
         public ViewHolder(View v) {
             txtViewName = (TextView) v.findViewById(R.id.row_name);
-            txtViewComment = (TextView) v.findViewById(R.id.row_comment);
-            txtPrice = (TextView) v.findViewById(R.id.row_price);
+//            txtViewComment = (TextView) v.findViewById(R.id.row_comment);
+//            txtPrice = (TextView) v.findViewById(R.id.row_price);
             txtTime = (TextView) v.findViewById(R.id.row_time);
             btnDelete = (Button) v.findViewById(R.id.btn_delete);
             btnDelete.setOnClickListener(mOnClickListener);

@@ -197,15 +197,8 @@ public class AccountMainActivity extends BaseActivity {
             LogUtil.d(TAG, "mButtonClickListener called: " + v.toString());
             switch (v.getId()) {
                 case R.id.fab:
-                    Intent intent = new Intent(mContext, AccountAddItemActivity.class);
+                    Intent intent = new Intent(mContext, AccountAddOrUpdateActivity.class);
                     startActivity(intent);
-//                    Snackbar.make(v, "Data Deleted", Snackbar.LENGTH_SHORT)
-//                            .setAction("Undo", new View.OnClickListener() {
-//                                @Override
-//                                public void onClick(View view) {
-//                                    LogUtil.d(TAG, "Undo called");
-//                                }
-//                            }).show();
                     break;
                 case R.id.icon_image:
                     LogUtil.d(TAG, "call icon_image test");
