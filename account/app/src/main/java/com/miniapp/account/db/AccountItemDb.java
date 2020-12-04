@@ -26,6 +26,7 @@ public class AccountItemDb extends SQLiteOpenHelper {
     private Context mContext = null;
     private SQLiteDatabase database = this.getWritableDatabase();
     private Cursor cursor = null;
+    private static AccountItemDb mInstance;
 
     public static final String CREATE_ACCOUNT = "create table " + TABLE_ACCOUNT + " ("
             + ID + " integer primary key autoincrement, "
@@ -34,9 +35,16 @@ public class AccountItemDb extends SQLiteOpenHelper {
             + ACCOUNT_ITEM_DATE + " text, "
             + ACCOUNT_ITEM_COMMENT + " text)";
 
-    public AccountItemDb(Context context) {
+    private AccountItemDb(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
         mContext = context;
+    }
+
+    public static synchronized AccountItemDb getInstance(Context context) {
+        if (mInstance == null) {
+            mInstance = new AccountItemDb(context.getApplicationContext());
+        }
+        return mInstance;
     }
 
     @Override
@@ -85,4 +93,28 @@ public class AccountItemDb extends SQLiteOpenHelper {
                 null, null, null, null);
         return cursor;
     }
+
+    public double getTotalMoney() {
+        double res = 0;
+        Cursor cursor = null;
+        try {
+            cursor = getCursor();
+            if(cursor.moveToFirst()) {
+                do {
+                    res +=  cursor.getDouble(cursor.getColumnIndex(ACCOUNT_ITEM_PRICE));
+                }while (cursor.moveToNext());
+            }
+        } catch (Exception e) {
+            LogUtil.e(TAG, "cursor " + e);
+            e.printStackTrace();
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+                cursor = null;
+            }
+
+        }
+        return res;
+    }
+
 }

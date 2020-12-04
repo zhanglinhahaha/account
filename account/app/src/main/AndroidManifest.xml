@@ -37,6 +37,7 @@
         <receiver android:name=".broadcast.AccountBroadcastReceiver" />
 
         <service android:name=".service.AccountService" />
+
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="com.miniapp.account.fileprovider"

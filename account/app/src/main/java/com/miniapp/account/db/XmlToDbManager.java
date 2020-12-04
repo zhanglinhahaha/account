@@ -25,7 +25,7 @@ public class XmlToDbManager {
 
     public XmlToDbManager(Context context){
         mCtx = context;
-        databaseHelper = new AccountItemDb(context);
+        databaseHelper = AccountItemDb.getInstance(context);
         mDbList = new ArrayList<DbItem>();
     }
 

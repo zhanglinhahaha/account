@@ -92,7 +92,7 @@ public class AccountDialog extends BaseActivity {
         builder.setPositiveButton(R.string.dialog_button_yes, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                AccountItemDb databaseHelper = new AccountItemDb(mContext);
+                AccountItemDb databaseHelper = AccountItemDb.getInstance(mContext);
                 databaseHelper.deleteAll();
                 finish();
             }

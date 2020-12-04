@@ -59,7 +59,7 @@ public class LoginActivity extends BaseActivity {
             public void onClick(View view) {
                 String account = accountEdit.getText().toString();
                 String password = passwordEdit.getText().toString();
-                if(account.equals("admin") && password.equals("123456")) {
+                if(account.equals("admin") && password.equals("970521")) {
 
                     if(rememberPass.isChecked()) {
                         mLoginUtil.setLoginSettings(account, password, true);

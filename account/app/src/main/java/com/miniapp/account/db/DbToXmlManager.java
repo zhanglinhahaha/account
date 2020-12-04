@@ -33,7 +33,7 @@ public class DbToXmlManager {
 
     public DbToXmlManager(Context context){
         mCtx = context;
-        databaseHelper = new AccountItemDb(context);
+        databaseHelper = AccountItemDb.getInstance(context);
     }
 
     public long start(String path){

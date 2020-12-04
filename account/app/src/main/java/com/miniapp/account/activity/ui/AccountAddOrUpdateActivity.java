@@ -28,7 +28,6 @@ public class AccountAddOrUpdateActivity extends BaseActivity {
     private EditText mComment = null;
     private EditText mDate = null;
     private Button mAddButton = null;
-    private ContentValues mContentValues = null;
     private int mAddOrUpdate = 0;
 
     AccountItemDb databaseHelper = null;
@@ -46,7 +45,7 @@ public class AccountAddOrUpdateActivity extends BaseActivity {
         mAddButton = (Button) findViewById(R.id.db_add);
 
         mAddOrUpdate = getIntent().getIntExtra(AccountConstants.ADD_OR_UPDATE_TYPE, 0);
-        databaseHelper = new AccountItemDb(mContext);
+        databaseHelper = AccountItemDb.getInstance(mContext);
     }
 
     @Override
@@ -66,17 +65,15 @@ public class AccountAddOrUpdateActivity extends BaseActivity {
             public boolean onTouch(View v, MotionEvent event) {
                 if (event.getAction()==MotionEvent.ACTION_DOWN){
                     hideInput();
-                    switch (v.getId()) {
-                        case R.id.db_date:
-                            showDatePickDialog(new DatePickerDialog.OnDateSetListener() {
-                                @Override
-                                public void onDateSet(DatePicker datePicker, int year, int month, int day) {
-                                    //选择日期过后执行的事件
-                                    mDate.setText(year + "-" + (month + 1) + "-" + day);
-                                    mDate.setSelection(mDate.getText().toString().length());
-                                }
-                            }, mDate.getText().toString());
-                            break;
+                    if (v.getId() == R.id.db_date) {
+                        showDatePickDialog(new DatePickerDialog.OnDateSetListener() {
+                            @Override
+                            public void onDateSet(DatePicker datePicker, int year, int month, int day) {
+                                //选择日期过后执行的事件
+                                mDate.setText(year + "-" + (month + 1) + "-" + day);
+                                mDate.setSelection(mDate.getText().toString().length());
+                            }
+                        }, mDate.getText().toString());
                     }
                 }
                 return false;
@@ -102,6 +99,7 @@ public class AccountAddOrUpdateActivity extends BaseActivity {
                 mComment.setText(comment);
             }
         }catch(Exception e){
+            LogUtil.e(TAG, "cursor, " + e);
             e.printStackTrace();
         }finally{
             if(cursor != null){
@@ -115,12 +113,8 @@ public class AccountAddOrUpdateActivity extends BaseActivity {
         @Override
         public void onClick(View v) {
             LogUtil.d(TAG, v.toString());
-            switch (v.getId()) {
-                case R.id.db_add:
-                    checkItemInfo();
-                    break;
-                default:
-                    break;
+            if (v.getId() == R.id.db_add) {
+                checkItemInfo();
             }
         }
     };
@@ -128,7 +122,7 @@ public class AccountAddOrUpdateActivity extends BaseActivity {
     private void hideInput() {
         InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
         View v = getWindow().peekDecorView();
-        if (null != v) {
+        if (v != null && imm != null) {
             imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
         }
     }
@@ -150,7 +144,7 @@ public class AccountAddOrUpdateActivity extends BaseActivity {
         datePickerDialog.show();
     }
 
-    private boolean checkItemInfo() {
+    private void checkItemInfo() {
         String name = mUsername.getText().toString().trim();
         String priceStr = mPrice.getText().toString().trim();
         String comment = mComment.getText().toString().trim();
@@ -158,16 +152,16 @@ public class AccountAddOrUpdateActivity extends BaseActivity {
 
         if(name.length() == 0 || priceStr.length() == 0
                 ||comment.length() == 0 || date.length() == 0) {
-            return false;
+            return;
         }
 
         double priceDouble = 0;
         try {
-            priceDouble = Double.valueOf(priceStr);
+            priceDouble = Double.parseDouble(priceStr);
         }catch (Exception e) {
             e.printStackTrace();
         }
-        mContentValues = new ContentValues();
+        ContentValues mContentValues = new ContentValues();
         mContentValues.put(AccountItemDb.ACCOUNT_ITEM_USERNAME, name);
         mContentValues.put(AccountItemDb.ACCOUNT_ITEM_PRICE, priceDouble);
         mContentValues.put(AccountItemDb.ACCOUNT_ITEM_COMMENT, comment);
@@ -183,6 +177,5 @@ public class AccountAddOrUpdateActivity extends BaseActivity {
         Intent intent = new Intent(mContext, AccountMainActivity.class);
         startActivity(intent);
         finish();
-        return true;
     }
 }

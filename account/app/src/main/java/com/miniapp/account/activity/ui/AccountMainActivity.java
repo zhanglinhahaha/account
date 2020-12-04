@@ -59,7 +59,7 @@ public class AccountMainActivity extends BaseActivity {
     private TextView mUserMail = null;
 
     private ListView mContentsList = null;
-    private SimpleCursorAdapter mAdapter = null;
+    private AccountCursorAdapter mAdapter = null;
     private AccountItemDb databaseHelper = null;
     private SwipeRefreshLayout swipeRefresh = null;
     private Cursor cursor = null;
@@ -79,6 +79,7 @@ public class AccountMainActivity extends BaseActivity {
         swipeRefresh = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh);
 
         LogUtil.delFile();//delete logFile once a week
+        applyForPermission();
     }
 
     @Override
@@ -121,7 +122,7 @@ public class AccountMainActivity extends BaseActivity {
 
     private void makeContents() {
         LogUtil.v(TAG,"makeContents()");
-        databaseHelper = new AccountItemDb(this);
+        databaseHelper = AccountItemDb.getInstance(this);
         try {
             cursor = databaseHelper.getCursor();
             if (cursor.getCount() == 0) {
@@ -196,7 +197,6 @@ public class AccountMainActivity extends BaseActivity {
                 mDrawerLayout.openDrawer(GravityCompat.START);
                 break;
             case R.id.exportDb:
-                applyForPermission();
                 DbToXmlManager exportFile = new DbToXmlManager(mContext);
                 if(exportFile.start(path) > 0) {
                     Toast.makeText(mContext, path, Toast.LENGTH_SHORT).show();
@@ -205,7 +205,6 @@ public class AccountMainActivity extends BaseActivity {
                 }
                 break;
             case R.id.importDb:
-                applyForPermission();
                 XmlToDbManager importFile = new XmlToDbManager(mContext);
                 int num = importFile.start(path);
                 Toast.makeText(mContext, "import Num = " + num, Toast.LENGTH_SHORT).show();
@@ -221,22 +220,24 @@ public class AccountMainActivity extends BaseActivity {
 
     public void shareFiles(String filepath) {
         File file = new File(filepath);
+        LogUtil.d(TAG, filepath);
         if (file.exists()) {
             Intent shareIntent = new Intent();
             shareIntent.setAction(Intent.ACTION_SEND);
-
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 Uri contentUri = FileProvider.getUriForFile(mContext, BuildConfig.APPLICATION_ID + ".fileprovider",file);
+                LogUtil.d(TAG, ">= N, " + contentUri.toString());
                 shareIntent.putExtra(Intent.EXTRA_STREAM, contentUri);
                 shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
             } else {
+                LogUtil.d(TAG, Uri.fromFile(file).toString());
                 shareIntent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(file));
             }
-            shareIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
             shareIntent.setType("text/plain");
             Intent chooser = Intent.createChooser(shareIntent, "Share file...");
             mContext.startActivity(chooser);
+        }else {
+            Toast.makeText(mContext, "The file don't exist !!!", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -264,7 +265,8 @@ public class AccountMainActivity extends BaseActivity {
                     startActivity(intent);
                     break;
                 case R.id.icon_image:
-                    LogUtil.d(TAG, "call icon_image test");
+                    Toast.makeText(mContext, "The total consumption: " + databaseHelper.getTotalMoney(), Toast.LENGTH_SHORT).show();
+                    LogUtil.d(TAG, "call icon_image test. " + "The total consumption: " + databaseHelper.getTotalMoney());
                     break;
                 default:break;
             }
