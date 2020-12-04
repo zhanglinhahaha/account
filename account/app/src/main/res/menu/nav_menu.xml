@@ -19,8 +19,8 @@
             android:title="Mail"/>
         <item
             android:id="@+id/nav_task"
-            android:icon="@drawable/task"
-            android:title="Task"/>
+            android:icon="@drawable/delete"
+            android:title="DeleteAll"/>
         <item
             android:id="@+id/nav_logout"
             android:icon="@drawable/logout"

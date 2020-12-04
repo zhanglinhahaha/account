@@ -67,6 +67,11 @@ public class AccountItemDb extends SQLiteOpenHelper {
         LogUtil.d(TAG, "delete: " + id);
     }
 
+    public void deleteAll() {
+        database.execSQL("delete from " + TABLE_ACCOUNT);
+        LogUtil.d(TAG, "deleteAll()");
+    }
+
     public Cursor query(Integer id) {
         Cursor cursor = database.query(TABLE_ACCOUNT,null, ID + " = ?", new String[] {""+id}, null, null, null);
         if(cursor != null) {

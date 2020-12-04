@@ -16,7 +16,6 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
 import com.miniapp.account.LogUtil;
-import com.miniapp.account.activity.AccountConstants;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -26,10 +25,10 @@ import java.io.StringWriter;
  * Created by zl on 20-12-3.
  */
 public class DbToXmlManager {
-    private static final String DBG_TAG = "AccountDbToXmlMgr";
+    private static final String TAG = "AccountDbToXmlMgr";
 
     private Context mCtx = null;
-    private String mBackUpDir = null;
+    private String mExportDir = null;
     private AccountItemDb databaseHelper = null;
 
     public DbToXmlManager(Context context){
@@ -37,12 +36,12 @@ public class DbToXmlManager {
         databaseHelper = new AccountItemDb(context);
     }
 
-    public void start(String path){
-        mBackUpDir = path;
-        backup();
+    public long start(String path){
+        mExportDir = path;
+        return export();
     }
 
-    private long backup() {
+    private long export() {
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         DocumentBuilder db = null;
         Document d = null;
@@ -51,7 +50,7 @@ public class DbToXmlManager {
         try{
             db = dbf.newDocumentBuilder();
         }catch(ParserConfigurationException e){
-            LogUtil.e(DBG_TAG,"backup() newDocumentBuilder Exception = " + e);
+            LogUtil.e(TAG,"export() newDocumentBuilder Exception = " + e);
             e.printStackTrace();
         }
         if(db!=null){
@@ -95,6 +94,7 @@ public class DbToXmlManager {
             }
         }
         catch (Exception e) {
+            LogUtil.e(TAG, "cursor " + e);
             e.printStackTrace();
         }
         finally {
@@ -108,7 +108,7 @@ public class DbToXmlManager {
         try {
             t = tf.newTransformer( );
         } catch ( TransformerConfigurationException e ) {
-            LogUtil.e(DBG_TAG,"backup() newTransformer Exception = " + e);
+            LogUtil.e(TAG,"export() newTransformer Exception = " + e);
             e.printStackTrace( );
         }
         if(t!=null){
@@ -123,20 +123,18 @@ public class DbToXmlManager {
                 t.transform( new DOMSource( d ) , new StreamResult( sw ) );
             }
         } catch ( TransformerException e ) {
-            LogUtil.e(DBG_TAG,"backup() transform Exception = " + e);
+            LogUtil.e(TAG,"export() transform Exception = " + e);
             e.printStackTrace( );
         }
 
-        LogUtil.i(DBG_TAG,"backup() path = " + mBackUpDir);
-        File file = new File(AccountConstants.EXTERNAL_FILE_PATH);
+        LogUtil.i(TAG,"export() path = " + mExportDir);
+        File file = new File(mExportDir);
         if(!file.exists()){
-            //先得到文件的上级目录，并创建上级目录，在创建文件
             file.getParentFile().mkdir();
             try {
-                //创建文件
                 file.createNewFile();
             } catch (Exception e) {
-                LogUtil.e(DBG_TAG,"file exists Exception = " + e);
+                LogUtil.e(TAG,"file exists Exception = " + e);
                 e.printStackTrace();
             }
         }
@@ -145,7 +143,7 @@ public class DbToXmlManager {
             fos.write(sw.toString().getBytes());
             fos.close();
         }catch(Exception e){
-            LogUtil.e(DBG_TAG,"backup() write Exception = " + e);
+            LogUtil.e(TAG,"backup() write Exception = " + e);
             e.printStackTrace( );
         }
 

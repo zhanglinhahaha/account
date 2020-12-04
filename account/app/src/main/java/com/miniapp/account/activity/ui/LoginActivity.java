@@ -9,8 +9,6 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.miniapp.account.ActivityCollector;
-import com.miniapp.account.MainActivity;
 import com.miniapp.account.R;
 
 import com.miniapp.account.LogUtil;

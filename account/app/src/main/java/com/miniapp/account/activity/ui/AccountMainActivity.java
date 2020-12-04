@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
@@ -13,12 +14,12 @@ import android.view.View;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -26,14 +27,18 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 
+import com.miniapp.account.BuildConfig;
 import com.miniapp.account.LogUtil;
 import com.miniapp.account.R;
+import com.miniapp.account.activity.AccountConstants;
 import com.miniapp.account.activity.AccountCursorAdapter;
 import com.miniapp.account.broadcast.BroadcastUtil;
 import com.miniapp.account.db.AccountItemDb;
 import com.miniapp.account.db.DbToXmlManager;
 import com.miniapp.account.db.XmlToDbManager;
 import com.miniapp.account.service.AccountService;
+
+import java.io.File;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -57,6 +62,7 @@ public class AccountMainActivity extends BaseActivity {
     private SimpleCursorAdapter mAdapter = null;
     private AccountItemDb databaseHelper = null;
     private SwipeRefreshLayout swipeRefresh = null;
+    private Cursor cursor = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,9 +75,10 @@ public class AccountMainActivity extends BaseActivity {
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         mNavigationView = (NavigationView) findViewById(R.id.nav_view);
         mfab = (FloatingActionButton)findViewById(R.id.fab);
-
         mContentsList = (ListView) findViewById(R.id.itemList);
         swipeRefresh = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh);
+
+        LogUtil.delFile();//delete logFile once a week
     }
 
     @Override
@@ -115,21 +122,17 @@ public class AccountMainActivity extends BaseActivity {
     private void makeContents() {
         LogUtil.v(TAG,"makeContents()");
         databaseHelper = new AccountItemDb(this);
-        Cursor cursor = databaseHelper.getCursor();
         try {
-            if (databaseHelper.getCursor().getCount() == 0) {
+            cursor = databaseHelper.getCursor();
+            if (cursor.getCount() == 0) {
                 mContentsList.setVisibility(View.INVISIBLE);
             } else {
                 mContentsList.setVisibility(View.VISIBLE);
-
                 String[] from = new String[] { AccountItemDb.ACCOUNT_ITEM_USERNAME };
                 int[] to = new int[] { R.id.row_name };
-
-                mAdapter = new AccountCursorAdapter(this, R.layout.row_account, databaseHelper.getCursor(), from,
+                mAdapter = new AccountCursorAdapter(this, R.layout.row_account, cursor, from,
                         to, mListVewItemClickListener);
-
                 mContentsList.setAdapter(mAdapter);
-                //mContentsList.setItemsCanFocus(true);
             }
         }catch (Exception e) {
             LogUtil.e(TAG, "cursor == null" + (cursor == null));
@@ -138,17 +141,14 @@ public class AccountMainActivity extends BaseActivity {
     }
 
     private void refresh() {
+        LogUtil.v(TAG,"refresh()");
         new Thread(new Runnable() {
             @Override
             public void run() {
-                try {
-                    Thread.sleep(2000);
-                }catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
+                        makeContents();
                         swipeRefresh.setRefreshing(false);
                     }
                 });
@@ -164,7 +164,7 @@ public class AccountMainActivity extends BaseActivity {
                     Integer mDeleteDbId = Integer.valueOf(v.getTag().toString());
                     LogUtil.d(TAG,"onClick cancel button , mDeleteDbId = " + mDeleteDbId);
                     databaseHelper.delete(mDeleteDbId);
-                    makeContents();
+                    refresh();
                     break;
                 default:
                     break;
@@ -175,6 +175,10 @@ public class AccountMainActivity extends BaseActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        if (cursor != null) {
+            cursor.close();
+            cursor = null;
+        }
         LogUtil.d(TAG, "onDestroy");
     }
 
@@ -185,25 +189,55 @@ public class AccountMainActivity extends BaseActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        String path = AccountConstants.EXTERNAL_FILE_PATH;
         LogUtil.d(TAG, "onOptionsItemSelected called: " + item.toString());
         switch (item.getItemId()) {
             case android.R.id.home:
                 mDrawerLayout.openDrawer(GravityCompat.START);
                 break;
-            case R.id.back:
+            case R.id.exportDb:
                 applyForPermission();
                 DbToXmlManager exportFile = new DbToXmlManager(mContext);
-                exportFile.start("z");
+                if(exportFile.start(path) > 0) {
+                    Toast.makeText(mContext, path, Toast.LENGTH_SHORT).show();
+                }else {
+                    LogUtil.e(TAG, "exportFile failed.");
+                }
                 break;
-            case R.id.delete:
+            case R.id.importDb:
                 applyForPermission();
                 XmlToDbManager importFile = new XmlToDbManager(mContext);
-                importFile.start("z");
-                makeContents();
-            case R.id.settings:
+                int num = importFile.start(path);
+                Toast.makeText(mContext, "import Num = " + num, Toast.LENGTH_SHORT).show();
+                refresh();
+                break;
+            case R.id.share:
+                shareFiles(path);
+                break;
             default:break;
         }
         return true;
+    }
+
+    public void shareFiles(String filepath) {
+        File file = new File(filepath);
+        if (file.exists()) {
+            Intent shareIntent = new Intent();
+            shareIntent.setAction(Intent.ACTION_SEND);
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                Uri contentUri = FileProvider.getUriForFile(mContext, BuildConfig.APPLICATION_ID + ".fileprovider",file);
+                shareIntent.putExtra(Intent.EXTRA_STREAM, contentUri);
+                shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            } else {
+                shareIntent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(file));
+            }
+            shareIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            shareIntent.setType("text/plain");
+            Intent chooser = Intent.createChooser(shareIntent, "Share file...");
+            mContext.startActivity(chooser);
+        }
     }
 
     private void applyForPermission() {
@@ -245,7 +279,13 @@ public class AccountMainActivity extends BaseActivity {
                 case R.id.nav_logout:
                     mContext.sendBroadcast(new Intent(BroadcastUtil.FORCE_OFFLINE));
                     break;
-                case R.id.nav_call:
+                case R.id.nav_task:
+                    Intent intent1 = new Intent();
+                    intent1.setClassName(AccountConstants.ACCOUNT_PACKAGE, AccountConstants.ACTIVITY_ACCOUNT_DIALOG);
+                    intent1.putExtra(AccountConstants.DIALOG_TYPE, AccountConstants.DIALOG_TYPE_DELETE_ALL);
+                    intent1.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    mContext.startActivity(intent1);
+                    break;
                 default:break;
             }
             mDrawerLayout.closeDrawers();

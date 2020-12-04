@@ -87,18 +87,28 @@ public class AccountAddOrUpdateActivity extends BaseActivity {
     private void makeContent() {
         LogUtil.v(TAG, "makeContent");
         mAddButton.setText(R.string.db_update);
-        Cursor cursor = databaseHelper.query(mAddOrUpdate);
-        if(cursor.getCount() != 0 ) {
-            String name = cursor.getString(cursor.getColumnIndex(AccountItemDb.ACCOUNT_ITEM_USERNAME));
-            String comment = cursor.getString(cursor.getColumnIndex(AccountItemDb.ACCOUNT_ITEM_COMMENT));
-            String date = cursor.getString(cursor.getColumnIndex(AccountItemDb.ACCOUNT_ITEM_DATE));
-            double price = cursor.getDouble(cursor.getColumnIndex(AccountItemDb.ACCOUNT_ITEM_PRICE));
-            LogUtil.d(TAG, " date =" + date + " ,name  = " + name + ", comment = " + comment + ", price = " + price);
-            mUsername.setText(name);
-            mPrice.setText(""+price);
-            mDate.setText(date);
-            mComment.setText(comment);
+        Cursor cursor = null;
+        try {
+            cursor = databaseHelper.query(mAddOrUpdate);
+            if(cursor.getCount() != 0 ) {
+                String name = cursor.getString(cursor.getColumnIndex(AccountItemDb.ACCOUNT_ITEM_USERNAME));
+                String comment = cursor.getString(cursor.getColumnIndex(AccountItemDb.ACCOUNT_ITEM_COMMENT));
+                String date = cursor.getString(cursor.getColumnIndex(AccountItemDb.ACCOUNT_ITEM_DATE));
+                double price = cursor.getDouble(cursor.getColumnIndex(AccountItemDb.ACCOUNT_ITEM_PRICE));
+                LogUtil.d(TAG, " date =" + date + " ,name  = " + name + ", comment = " + comment + ", price = " + price);
+                mUsername.setText(name);
+                mPrice.setText(""+price);
+                mDate.setText(date);
+                mComment.setText(comment);
+            }
+        }catch(Exception e){
+            e.printStackTrace();
+        }finally{
+            if(cursor != null){
+                cursor.close();
+            }
         }
+
     }
 
     private View.OnClickListener mClickListener = new View.OnClickListener() {

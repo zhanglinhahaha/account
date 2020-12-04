@@ -2,6 +2,9 @@ package com.miniapp.account.db;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.widget.TextView;
+
+import com.miniapp.account.LogUtil;
 import com.miniapp.account.activity.AccountConstants;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserFactory;
@@ -13,8 +16,8 @@ import java.util.ArrayList;
  * Created by zl on 20-12-3.
  */
 public class XmlToDbManager {
-    private static final String DBG_TAG = "AccountDbXmlToDbMgr";
-    private Context mCtx;
+    private static final String TAG = "AccountDbXmlToDbMgr";
+    private Context mCtx = null;
     private ContentValues mCv = new ContentValues();
     private ArrayList<DbItem> mDbList;
     private String mRestoreFilePath;
@@ -37,13 +40,15 @@ public class XmlToDbManager {
         }
     }
 
-    public void start(String path){
-        mRestoreFilePath = AccountConstants.EXTERNAL_FILE_PATH;
-        restore();
+    public int start(String path){
+        mRestoreFilePath = path;
+        int res = restore();
         deleteBackupFile();
+        return res;
     }
 
-    private void restore() {
+    private int restore() {
+        int importNum = 0;
         try{
             XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
             XmlPullParser parser = factory.newPullParser();
@@ -91,7 +96,7 @@ public class XmlToDbManager {
                             try {
                                 if(mCv.size() > 0){
                                     databaseHelper.insert(mCv);
-
+                                    ++importNum;
                                 }
                             } catch (Exception e) {
                                 e.printStackTrace();
@@ -107,8 +112,10 @@ public class XmlToDbManager {
 
             }
         }catch(Exception e){
+            LogUtil.e(TAG, "restore " + e);
             e.printStackTrace();
         }
+        return importNum;
     }
 
 
@@ -119,6 +126,7 @@ public class XmlToDbManager {
                 file.delete();
             }
         }catch(Exception e){
+            LogUtil.e(TAG, "deleteBackupFile " + e);
             e.printStackTrace();
         }
     }

@@ -1,5 +1,7 @@
 package com.miniapp.account.activity;
 
+import android.os.Environment;
+
 /**
  * Created by zl on 20-11-29.
  */
@@ -17,6 +19,9 @@ public class AccountConstants {
 
     public static final String DIALOG_TYPE = "dialog_type";
     public static final int DIALOG_TYPE_LOGOUT = 0x01;
+    public static final int DIALOG_TYPE_DELETE_ALL = 0x02;
 
-    public static final String EXTERNAL_FILE_PATH = "/storage/emulated/0/miniAccount/account.xml";
+    public static String ACCOUNT_DIR_PATH = Environment.getExternalStorageDirectory() + "/miniAccount";
+    public static final String EXTERNAL_FILE_PATH = ACCOUNT_DIR_PATH + "/account.xml";
+    public static int SDCARD_LOG_FILE_SAVE_DAYS = 0;
 }

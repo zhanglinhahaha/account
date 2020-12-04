@@ -11,6 +11,7 @@ import com.miniapp.account.LogUtil;
 import com.miniapp.account.R;
 import com.miniapp.account.activity.AccountConstants;
 import com.miniapp.account.activity.LoginUtil;
+import com.miniapp.account.db.AccountItemDb;
 
 public class AccountDialog extends BaseActivity {
     private static final String TAG = "AccountDialog";
@@ -37,8 +38,10 @@ public class AccountDialog extends BaseActivity {
     private void initOnResume() {
         switch (mDialogType) {
             case AccountConstants.DIALOG_TYPE_LOGOUT:
-                showLogOutDiag();
+                showLogOutDialog();
                 break;
+            case AccountConstants.DIALOG_TYPE_DELETE_ALL:
+                showDeleteAllDialog();
             default:
                 break;
         }
@@ -54,7 +57,7 @@ public class AccountDialog extends BaseActivity {
         }
     }
 
-    private void showLogOutDiag() {
+    private void showLogOutDialog() {
         LogUtil.v(TAG, "showLogOutDiag");
         AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
         builder.setTitle(R.string.dialog_warning_title);
@@ -68,6 +71,30 @@ public class AccountDialog extends BaseActivity {
                 Intent intent1 = new Intent(mContext, LoginActivity.class);
                 mContext.startActivity(intent1);
                 ActivityCollector.finishAll();
+            }
+        });
+        builder.setNegativeButton(R.string.dialog_button_no, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                finish();
+            }
+        });
+        mDialog = builder.create();
+        mDialog.show();
+    }
+
+    private void showDeleteAllDialog() {
+        LogUtil.v(TAG, "showDeleteAllDialog");
+        AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+        builder.setTitle(R.string.dialog_warning_title);
+        builder.setMessage(R.string.dialog_delete_all_msg);
+        builder.setCancelable(false);
+        builder.setPositiveButton(R.string.dialog_button_yes, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                AccountItemDb databaseHelper = new AccountItemDb(mContext);
+                databaseHelper.deleteAll();
+                finish();
             }
         });
         builder.setNegativeButton(R.string.dialog_button_no, new DialogInterface.OnClickListener() {

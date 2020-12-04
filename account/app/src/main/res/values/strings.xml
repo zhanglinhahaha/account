@@ -5,6 +5,7 @@
     <!--Popup string-->
     <string name="dialog_warning_title">Warning</string>
     <string name="dialog_logout_msg">Do you want to logout?</string>
+    <string name="dialog_delete_all_msg">Do you want to Delete All Data?</string>
     <string name="dialog_button_yes">Yes</string>
     <string name="dialog_button_no">No</string>
 
@@ -15,5 +16,10 @@
     <string name="db_date">date</string>
     <string name="db_add">Add</string>
     <string name="db_update">Update</string>
+
+    <!--Menu string-->
+    <string name="menu_export">Export</string>
+    <string name="menu_import">Import</string>
+    <string name="menu_share">Share</string>
 
 </resources>
