@@ -9,34 +9,39 @@
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
+        android:requestLegacyExternalStorage="true"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:requestLegacyExternalStorage="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".activity.ui.AccountFiltrateActivity">
+
+        </activity>
+
         <activity android:name=".activity.ui.AccountAddOrUpdateActivity">
 
         </activity>
 
-        <activity android:name=".activity.ui.AccountMainActivity"
+        <activity
+            android:name=".activity.ui.AccountMainActivity"
             android:launchMode="singleTask">
+
         </activity>
 
         <activity android:name=".activity.ui.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".activity.ui.AccountDialog"
             android:theme="@style/AccountDialog" />
-
         <activity android:name=".activity.ui.BaseActivity" />
 
         <receiver android:name=".broadcast.AccountBroadcastReceiver" />
 
-        <service android:name=".service.AccountService" />
+        <service android:name=".service.AccountService"/>
 
         <provider
             android:name="androidx.core.content.FileProvider"
@@ -47,7 +52,6 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />
         </provider>
-
     </application>
 
 </manifest>

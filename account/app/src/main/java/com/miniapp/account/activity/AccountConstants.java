@@ -8,6 +8,7 @@ import android.os.Environment;
 public class AccountConstants {
     public static final String ACCOUNT_PACKAGE = "com.miniapp.account";
     public static final String ACTIVITY_ACCOUNT_DIALOG = "com.miniapp.account.activity.ui.AccountDialog";
+    public static final String ACTIVITY_ACCOUNT_FILTRATE = "com.miniapp.account.activity.ui.AccountFiltrateActivity";
 
     /**
      * 增加还是更新, 增加 type 默认为 0

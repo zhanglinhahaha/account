@@ -277,14 +277,19 @@ public class AccountMainActivity extends BaseActivity {
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
             LogUtil.d(TAG, "onNavigationItemSelected called: " + menuItem.toString());
+            Intent intent1 = new Intent();
             switch (menuItem.getItemId()) {
                 case R.id.nav_logout:
                     mContext.sendBroadcast(new Intent(BroadcastUtil.FORCE_OFFLINE));
                     break;
                 case R.id.nav_task:
-                    Intent intent1 = new Intent();
                     intent1.setClassName(AccountConstants.ACCOUNT_PACKAGE, AccountConstants.ACTIVITY_ACCOUNT_DIALOG);
                     intent1.putExtra(AccountConstants.DIALOG_TYPE, AccountConstants.DIALOG_TYPE_DELETE_ALL);
+                    intent1.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    mContext.startActivity(intent1);
+                    break;
+                case R.id.nav_mail:
+                    intent1.setClassName(AccountConstants.ACCOUNT_PACKAGE, AccountConstants.ACTIVITY_ACCOUNT_FILTRATE);
                     intent1.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     mContext.startActivity(intent1);
                     break;

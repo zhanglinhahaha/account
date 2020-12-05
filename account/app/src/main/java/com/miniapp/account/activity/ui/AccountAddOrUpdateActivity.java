@@ -30,7 +30,7 @@ public class AccountAddOrUpdateActivity extends BaseActivity {
     private Button mAddButton = null;
     private int mAddOrUpdate = 0;
 
-    AccountItemDb databaseHelper = null;
+    private AccountItemDb databaseHelper = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -25,7 +25,6 @@ public class AccountItemDb extends SQLiteOpenHelper {
 
     private Context mContext = null;
     private SQLiteDatabase database = this.getWritableDatabase();
-    private Cursor cursor = null;
     private static AccountItemDb mInstance;
 
     public static final String CREATE_ACCOUNT = "create table " + TABLE_ACCOUNT + " ("
@@ -88,6 +87,34 @@ public class AccountItemDb extends SQLiteOpenHelper {
         return cursor;
     }
 
+    public Cursor queryDateAndName(String date, String username) {
+        Cursor cursor = null;
+        String selection = null;
+        String[] selectionArg = null;
+        if(date == null && username == null) {
+            LogUtil.e(TAG, "Error, date and username both are null");
+            return getCursor();
+        }else {
+            if(date != null) {
+                if(username != null) {
+                    selection = ACCOUNT_ITEM_DATE + " LIKE ? " + " AND "
+                            + ACCOUNT_ITEM_USERNAME + "=?";
+                    selectionArg = new String[]{date + "%", username};
+                }else {
+                    selection = ACCOUNT_ITEM_DATE + " LIKE ? ";
+                    selectionArg = new String[]{date + "%"};
+                }
+            }else {
+                selection = ACCOUNT_ITEM_USERNAME + "=?";
+                selectionArg = new String[]{username};
+            }
+        }
+        cursor = database.query(TABLE_ACCOUNT,
+                null, selection, selectionArg, null, null, null);
+
+        return cursor;
+    }
+
     public Cursor getCursor() {
         Cursor cursor = database.query(TABLE_ACCOUNT, null, null ,
                 null, null, null, null);
@@ -112,7 +139,6 @@ public class AccountItemDb extends SQLiteOpenHelper {
                 cursor.close();
                 cursor = null;
             }
-
         }
         return res;
     }

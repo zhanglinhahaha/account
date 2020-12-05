@@ -13,6 +13,7 @@ import com.miniapp.account.R;
 
 import com.miniapp.account.LogUtil;
 import com.miniapp.account.activity.LoginUtil;
+import com.miniapp.account.service.AccountService;
 
 /**
  * Created by zl on 20-11-27.
@@ -77,6 +78,7 @@ public class LoginActivity extends BaseActivity {
     }
 
     private void gotoMainActivity() {
+        AccountService.getService(getApplicationContext());
         Intent intent = new Intent(mContext, AccountMainActivity.class);
         startActivity(intent);
         finish();

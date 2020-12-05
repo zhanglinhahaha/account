@@ -51,21 +51,28 @@ public class AccountCursorAdapter extends SimpleCursorAdapter {
             String date = mCursor.getString(mCursor.getColumnIndex(AccountItemDb.ACCOUNT_ITEM_DATE));
             double price = mCursor.getDouble(mCursor.getColumnIndex(AccountItemDb.ACCOUNT_ITEM_PRICE));
             //LogUtil.w(TAG, " getview pos =" + position + " ,name  = " + name + ", comment = " + comment + ", price = " + price);
-            mViewHolder.txtViewName.setText(name);
-            mViewHolder.txtTime.setText(date);
             final int id = mCursor.getInt(mCursor.getColumnIndex(AccountItemDb.ID));
-            mViewHolder.btnDelete.setTag(id);
-            convertView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    LogUtil.d(TAG,"_id = " + id);
-                    Intent intent1 = new Intent();
-                    intent1.setClassName(AccountConstants.ACCOUNT_PACKAGE, AccountConstants.ACTIVITY_ACCOUNT_ADD_OR_UPDATE);
-                    intent1.putExtra(AccountConstants.ADD_OR_UPDATE_TYPE, id);
-                    intent1.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    mContext.startActivity(intent1);
-                }
-            });
+
+            if(mOnClickListener == null) {
+                convertView.setClickable(false);
+                mViewHolder.txtViewName.setText(name + "\t" + price + "\t" + date + "\n" + comment);
+                mViewHolder.btnDelete.setVisibility(View.INVISIBLE);
+            } else {
+                mViewHolder.txtViewName.setText(name);
+                mViewHolder.txtTime.setText(date);
+                mViewHolder.btnDelete.setTag(id);
+                convertView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        LogUtil.d(TAG,"_id = " + id);
+                        Intent intent1 = new Intent();
+                        intent1.setClassName(AccountConstants.ACCOUNT_PACKAGE, AccountConstants.ACTIVITY_ACCOUNT_ADD_OR_UPDATE);
+                        intent1.putExtra(AccountConstants.ADD_OR_UPDATE_TYPE, id);
+                        intent1.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        mContext.startActivity(intent1);
+                    }
+                });
+            }
         }
         catch (Exception e) {
             LogUtil.e(TAG, "mCursor " + e);

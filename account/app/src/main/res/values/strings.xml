@@ -22,4 +22,8 @@
     <string name="menu_import">Import</string>
     <string name="menu_share">Share</string>
 
+
+    <string name="btn_query">Query</string>
+
+
 </resources>
