@@ -30,6 +30,7 @@ public class AccountFiltrateActivity extends BaseActivity {
     private ArrayList<String> mNameList = null;
     private AccountService mAccountService = null;
     private Button mBtnQuery = null;
+    private TextView mSumView = null;
     private Context mContext = null;
 
     private Cursor mCursor = null;
@@ -45,6 +46,7 @@ public class AccountFiltrateActivity extends BaseActivity {
         mNameSpinner = (Spinner) findViewById(R.id.username_spinner);
         mBtnQuery = (Button) findViewById(R.id.btn_query);
         mContentsList = (ListView) findViewById(R.id.itemList);
+        mSumView = (TextView) findViewById(R.id.querySum);
     }
 
     @Override
@@ -94,6 +96,7 @@ public class AccountFiltrateActivity extends BaseActivity {
         try {
             if (mCursor.getCount() == 0) {
                 mContentsList.setVisibility(View.INVISIBLE);
+                mSumView.setVisibility(View.INVISIBLE);
             } else {
                 mContentsList.setVisibility(View.VISIBLE);
                 String[] from = new String[] { AccountItemDb.ACCOUNT_ITEM_USERNAME };
@@ -101,6 +104,7 @@ public class AccountFiltrateActivity extends BaseActivity {
                 AccountCursorAdapter mAdapter = new AccountCursorAdapter(this, R.layout.row_account, mCursor, from,
                         to, null);
                 mContentsList.setAdapter(mAdapter);
+                mSumView.setText(String.format("%.2f", databaseHelper.getTotalMoneyForCursor(mCursor)));
             }
         }catch (Exception e) {
             LogUtil.e(TAG, "cursor == null" + (mCursor == null));

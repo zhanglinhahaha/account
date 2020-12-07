@@ -51,15 +51,13 @@ public class AccountCursorAdapter extends SimpleCursorAdapter {
             String date = mCursor.getString(mCursor.getColumnIndex(AccountItemDb.ACCOUNT_ITEM_DATE));
             double price = mCursor.getDouble(mCursor.getColumnIndex(AccountItemDb.ACCOUNT_ITEM_PRICE));
             //LogUtil.w(TAG, " getview pos =" + position + " ,name  = " + name + ", comment = " + comment + ", price = " + price);
+            mViewHolder.txtViewName.setText(name + "\n" + price + "\n" + comment);
+            mViewHolder.txtTime.setText(date);
             final int id = mCursor.getInt(mCursor.getColumnIndex(AccountItemDb.ID));
 
             if(mOnClickListener == null) {
-                convertView.setClickable(false);
-                mViewHolder.txtViewName.setText(name + "\t" + price + "\t" + date + "\n" + comment);
                 mViewHolder.btnDelete.setVisibility(View.INVISIBLE);
             } else {
-                mViewHolder.txtViewName.setText(name);
-                mViewHolder.txtTime.setText(date);
                 mViewHolder.btnDelete.setTag(id);
                 convertView.setOnClickListener(new View.OnClickListener() {
                     @Override

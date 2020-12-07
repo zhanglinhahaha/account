@@ -134,6 +134,8 @@ public class AccountMainActivity extends BaseActivity {
                 mAdapter = new AccountCursorAdapter(this, R.layout.row_account, cursor, from,
                         to, mListVewItemClickListener);
                 mContentsList.setAdapter(mAdapter);
+                TextView textView = (TextView) findViewById(R.id.querySum);
+                textView.setText(String.format("%.2f", databaseHelper.getTotalMoneyForCursor(null)));
             }
         }catch (Exception e) {
             LogUtil.e(TAG, "cursor == null" + (cursor == null));
@@ -265,8 +267,8 @@ public class AccountMainActivity extends BaseActivity {
                     startActivity(intent);
                     break;
                 case R.id.icon_image:
-                    Toast.makeText(mContext, "The total consumption: " + databaseHelper.getTotalMoney(), Toast.LENGTH_SHORT).show();
-                    LogUtil.d(TAG, "call icon_image test. " + "The total consumption: " + databaseHelper.getTotalMoney());
+                    Toast.makeText(mContext, "The total consumption: " + databaseHelper.getTotalMoneyForCursor(null), Toast.LENGTH_SHORT).show();
+                    LogUtil.d(TAG, "call icon_image test. " + "The total consumption: " + databaseHelper.getTotalMoneyForCursor(null));
                     break;
                 default:break;
             }

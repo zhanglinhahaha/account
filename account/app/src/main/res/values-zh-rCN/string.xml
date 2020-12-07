@@ -1,6 +1,10 @@
 <resources>
     <string name="app_name">迷你账本</string>
-    <string name="logout">退出</string>
+
+    <!--nav menu-->
+    <string name="nav_menu_logout">退出</string>
+    <string name="nav_menu_delete">清空</string>
+    <string name="nav_menu_query">查询</string>
 
     <!--Popup string-->
     <string name="dialog_warning_title">警告</string>

@@ -23,6 +23,9 @@ public class AccountItemDb extends SQLiteOpenHelper {
     public static final String ACCOUNT_ITEM_DATE = "date";
     public static final String ACCOUNT_ITEM_COMMENT = "comment";
 
+    //desc表示降序排列，asc是升序排列
+    private static final String ACCOUNT_ITEM_DATE_ASC = ACCOUNT_ITEM_DATE + " asc";
+
     private Context mContext = null;
     private SQLiteDatabase database = this.getWritableDatabase();
     private static AccountItemDb mInstance;
@@ -110,22 +113,21 @@ public class AccountItemDb extends SQLiteOpenHelper {
             }
         }
         cursor = database.query(TABLE_ACCOUNT,
-                null, selection, selectionArg, null, null, null);
+                null, selection, selectionArg, null, null, ACCOUNT_ITEM_DATE_ASC);
 
         return cursor;
     }
 
     public Cursor getCursor() {
         Cursor cursor = database.query(TABLE_ACCOUNT, null, null ,
-                null, null, null, null);
+                null, null, null, ACCOUNT_ITEM_DATE_ASC);
         return cursor;
     }
 
-    public double getTotalMoney() {
+    public double getTotalMoneyForCursor(Cursor cursor) {
         double res = 0;
-        Cursor cursor = null;
+        if(cursor == null) cursor = getCursor();
         try {
-            cursor = getCursor();
             if(cursor.moveToFirst()) {
                 do {
                     res +=  cursor.getDouble(cursor.getColumnIndex(ACCOUNT_ITEM_PRICE));
@@ -134,11 +136,6 @@ public class AccountItemDb extends SQLiteOpenHelper {
         } catch (Exception e) {
             LogUtil.e(TAG, "cursor " + e);
             e.printStackTrace();
-        } finally {
-            if (cursor != null) {
-                cursor.close();
-                cursor = null;
-            }
         }
         return res;
     }

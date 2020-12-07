@@ -16,15 +16,15 @@
         <item
             android:id="@+id/nav_mail"
             android:icon="@drawable/mail"
-            android:title="Mail"/>
+            android:title="@string/nav_menu_query"/>
         <item
             android:id="@+id/nav_task"
             android:icon="@drawable/delete"
-            android:title="DeleteAll"/>
+            android:title="@string/nav_menu_delete"/>
         <item
             android:id="@+id/nav_logout"
             android:icon="@drawable/logout"
-            android:title="@string/logout"/>
+            android:title="@string/nav_menu_logout"/>
     </group>
 
 </menu>

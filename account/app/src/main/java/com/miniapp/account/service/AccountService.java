@@ -26,6 +26,8 @@ public class AccountService extends Service {
     private ArrayList<String> mDateList = null;
     private double mTotalMoney = 0;
 
+    private ArrayList<String> mUserCateList = null;
+
     public static AccountService getService(Context ctx) {
         LogUtil.d(TAG,"getService() called, (AccountService == null)? " + (mAccountService == null));
         if (mAccountService == null) {
@@ -121,5 +123,13 @@ public class AccountService extends Service {
 
     public double getTotalMoney() {
         return mTotalMoney;
+    }
+
+    public ArrayList<String> getUserCateList() {
+        return mUserCateList;
+    }
+
+    public void setUserCateList(ArrayList<String> mUserCateList) {
+        this.mUserCateList = mUserCateList;
     }
 }

@@ -1,6 +1,10 @@
 <resources>
     <string name="app_name">Account</string>
-    <string name="logout">Logout</string>
+
+    <!--nav menu-->
+    <string name="nav_menu_logout">Logout</string>
+    <string name="nav_menu_delete">DeleteAll</string>
+    <string name="nav_menu_query">Query</string>
 
     <!--Popup string-->
     <string name="dialog_warning_title">Warning</string>
