@@ -13,18 +13,14 @@ public class LoginUtil {
     private static final String LOGIN_USERNAME = "username";
     private static final String LOGIN_PASSWORD = "password";
     private static final String LOGIN_REMEMBER_PASSWORD = "remember_password";
+    private static final String LOGIN_ACCOUNT_LIMIT = "account_limit_money_every_month";
     private static final String LOGIN_FILENAME = "login_data";
 
-
     private SharedPreferences mPreferences = null;
-    private SharedPreferences.Editor mEditor = null;
-    private Context mContext = null;
     private static LoginUtil mInstance = null;
 
     private LoginUtil(Context context){
-        mContext = context;
-        mPreferences = mContext.getSharedPreferences(LOGIN_FILENAME, mContext.MODE_PRIVATE);
-        mEditor = mPreferences.edit();
+        mPreferences = context.getSharedPreferences(LOGIN_FILENAME, Context.MODE_PRIVATE);
     }
 
     public static LoginUtil getInstance(Context context){
@@ -36,12 +32,12 @@ public class LoginUtil {
 
     public void setLoginSettings(String username, String password, Boolean isRemember) {
         LogUtil.d(TAG, "setLoginSettings() called with: username = [" + username + "], password = [" + password + "], isRemember = [" + isRemember + "]");
+        SharedPreferences.Editor mEditor = mPreferences.edit();
         if(username != null) mEditor.putString(LOGIN_USERNAME, username);
         if(password != null) mEditor.putString(LOGIN_PASSWORD, password);
         if(isRemember != null) mEditor.putBoolean(LOGIN_REMEMBER_PASSWORD, isRemember);
         mEditor.apply();
     }
-
 
     public String getLoginUsername() {
         return mPreferences.getString(LOGIN_USERNAME, "");
@@ -53,5 +49,15 @@ public class LoginUtil {
 
     public Boolean getLoginRememberPassword() {
         return mPreferences.getBoolean(LOGIN_REMEMBER_PASSWORD, false);
+    }
+
+    public int getLimitMoney() {
+        return mPreferences.getInt(LOGIN_ACCOUNT_LIMIT, 0);
+    }
+
+    public void setLimitMoney(int limitMoney) {
+        SharedPreferences.Editor mEditor = mPreferences.edit();
+        mEditor.putInt(LOGIN_ACCOUNT_LIMIT, limitMoney);
+        mEditor.apply();
     }
 }

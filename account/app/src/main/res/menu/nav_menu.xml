@@ -6,19 +6,19 @@
             android:icon="@drawable/phone"
             android:title="Call"/>
         <item
-            android:id="@+id/nav_friends"
-            android:icon="@drawable/friends"
-            android:title="Friends"/>
+            android:id="@+id/nav_category"
+            android:icon="@drawable/category"
+            android:title="@string/nav_menu_category"/>
         <item
-            android:id="@+id/nav_location"
+            android:id="@+id/nav_storage"
             android:icon="@drawable/location"
-            android:title="Location"/>
+            android:title="@string/nav_menu_storage"/>
         <item
-            android:id="@+id/nav_mail"
-            android:icon="@drawable/mail"
+            android:id="@+id/nav_query"
+            android:icon="@drawable/query"
             android:title="@string/nav_menu_query"/>
         <item
-            android:id="@+id/nav_task"
+            android:id="@+id/nav_delete"
             android:icon="@drawable/delete"
             android:title="@string/nav_menu_delete"/>
         <item

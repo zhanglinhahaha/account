@@ -5,12 +5,18 @@
     <string name="nav_menu_logout">退出</string>
     <string name="nav_menu_delete">清空</string>
     <string name="nav_menu_query">查询</string>
+    <string name="nav_menu_storage">存款</string>
+    <string name="nav_menu_category">类型</string>
 
     <!--Popup string-->
     <string name="dialog_warning_title">警告</string>
     <string name="dialog_logout_msg">你确定要退出吗?</string>
     <string name="dialog_delete_all_msg">你确定要删除所有数据吗?</string>
+    <string name="dialog_add_category">你需要添加一个新类型吗?</string>
+    <string name="dialog_set_limit_money">设置每月额度?</string>
     <string name="dialog_button_yes">是的</string>
+    <string name="dialog_button_add">添加</string>
+    <string name="dialog_button_set">设置</string>
     <string name="dialog_button_no">手误</string>
 
     <!--Account Db-->
@@ -25,5 +31,8 @@
     <string name="menu_export">导出</string>
     <string name="menu_import">导入</string>
     <string name="menu_share">分享</string>
+
+    <!--Button-->
+    <string name="btn_query">查询</string>
 
 </resources>

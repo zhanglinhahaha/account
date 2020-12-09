@@ -6,17 +6,23 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.text.InputType;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ListPopupWindow;
+import android.widget.Toast;
+import java.util.ArrayList;
 import java.util.Calendar;
 
 import com.miniapp.account.LogUtil;
 import com.miniapp.account.R;
 import com.miniapp.account.activity.AccountConstants;
+import com.miniapp.account.activity.CategoryUtil;
 import com.miniapp.account.db.AccountItemDb;
 
 public class AccountAddOrUpdateActivity extends BaseActivity {
@@ -56,29 +62,12 @@ public class AccountAddOrUpdateActivity extends BaseActivity {
     }
 
     private void initOnResume() {
-
         if(mAddOrUpdate != 0) makeContent();
-
         mAddButton.setOnClickListener(mClickListener);
-        mDate.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if (event.getAction()==MotionEvent.ACTION_DOWN){
-                    hideInput();
-                    if (v.getId() == R.id.db_date) {
-                        showDatePickDialog(new DatePickerDialog.OnDateSetListener() {
-                            @Override
-                            public void onDateSet(DatePicker datePicker, int year, int month, int day) {
-                                //选择日期过后执行的事件
-                                mDate.setText(year + "-" + (month + 1) + "-" + day);
-                                mDate.setSelection(mDate.getText().toString().length());
-                            }
-                        }, mDate.getText().toString());
-                    }
-                }
-                return false;
-            }
-        });
+        mDate.setOnTouchListener(mTouchListener);
+        mDate.setInputType(InputType.TYPE_NULL);
+        mUsername.setOnTouchListener(mTouchListener);
+        mUsername.setInputType(InputType.TYPE_NULL);
     }
 
     private void makeContent() {
@@ -109,6 +98,27 @@ public class AccountAddOrUpdateActivity extends BaseActivity {
 
     }
 
+    private View.OnTouchListener mTouchListener = new View.OnTouchListener() {
+        @Override
+        public boolean onTouch(View v, MotionEvent event) {
+            if (event.getAction()==MotionEvent.ACTION_DOWN){
+                if (v.getId() == R.id.db_date) {
+                    showDatePickDialog(new DatePickerDialog.OnDateSetListener() {
+                        @Override
+                        public void onDateSet(DatePicker datePicker, int year, int month, int day) {
+                            //选择日期过后执行的事件
+                            mDate.setText(year + "-" + (month + 1) + "-" + day);
+                            mDate.setSelection(mDate.getText().toString().length());
+                        }
+                    }, mDate.getText().toString());
+                }else if(v.getId() == R.id.db_username) {
+                    showListPopup();
+                }
+            }
+            return false;
+        }
+    };
+
     private View.OnClickListener mClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -119,15 +129,7 @@ public class AccountAddOrUpdateActivity extends BaseActivity {
         }
     };
 
-    private void hideInput() {
-        InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
-        View v = getWindow().peekDecorView();
-        if (v != null && imm != null) {
-            imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
-        }
-    }
-
-    public void showDatePickDialog(DatePickerDialog.OnDateSetListener listener, String curDate) {
+    private void showDatePickDialog(DatePickerDialog.OnDateSetListener listener, String curDate) {
         Calendar calendar = Calendar.getInstance();
         int year = 0,month = 0,day = 0;
         try {
@@ -144,6 +146,24 @@ public class AccountAddOrUpdateActivity extends BaseActivity {
         datePickerDialog.show();
     }
 
+    private void showListPopup() {
+        final ArrayList<String> list = CategoryUtil.getInstance(this).getCategoryUserNameList();
+        final ListPopupWindow listPopupWindow;
+        listPopupWindow = new ListPopupWindow(this);
+        listPopupWindow.setAdapter(new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1, list));
+        listPopupWindow.setAnchorView(mUsername);
+        listPopupWindow.setModal(true);
+        listPopupWindow.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                mUsername.setText(list.get(i));
+                mUsername.setSelection(mUsername.getText().toString().length());
+                listPopupWindow.dismiss();
+            }
+        });
+        listPopupWindow.show();
+    }
+
     private void checkItemInfo() {
         String name = mUsername.getText().toString().trim();
         String priceStr = mPrice.getText().toString().trim();
@@ -152,6 +172,7 @@ public class AccountAddOrUpdateActivity extends BaseActivity {
 
         if(name.length() == 0 || priceStr.length() == 0
                 ||comment.length() == 0 || date.length() == 0) {
+            Toast.makeText(mContext, getResources().getString(R.string.toast_finish_all), Toast.LENGTH_SHORT).show();
             return;
         }
 

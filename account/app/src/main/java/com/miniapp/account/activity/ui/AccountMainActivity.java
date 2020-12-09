@@ -12,10 +12,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
-import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.widget.Toolbar;
@@ -23,24 +21,23 @@ import androidx.core.content.FileProvider;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
+import java.io.File;
+import de.hdodenhof.circleimageview.CircleImageView;
 
 import com.miniapp.account.BuildConfig;
 import com.miniapp.account.LogUtil;
 import com.miniapp.account.R;
 import com.miniapp.account.activity.AccountConstants;
 import com.miniapp.account.activity.AccountCursorAdapter;
+import com.miniapp.account.activity.LoginUtil;
 import com.miniapp.account.broadcast.BroadcastUtil;
 import com.miniapp.account.db.AccountItemDb;
 import com.miniapp.account.db.DbToXmlManager;
 import com.miniapp.account.db.XmlToDbManager;
 import com.miniapp.account.service.AccountService;
 
-import java.io.File;
-
-import de.hdodenhof.circleimageview.CircleImageView;
 
 
 public class AccountMainActivity extends BaseActivity {
@@ -135,7 +132,13 @@ public class AccountMainActivity extends BaseActivity {
                         to, mListVewItemClickListener);
                 mContentsList.setAdapter(mAdapter);
                 TextView textView = (TextView) findViewById(R.id.querySum);
-                textView.setText(String.format("%.2f", databaseHelper.getTotalMoneyForCursor(null)));
+                int totalMoney = LoginUtil.getInstance(mContext).getLimitMoney();
+                double usedMoney = databaseHelper.getTotalMoneyForCursor(null);
+
+                String showRes = "Total: " + totalMoney
+                        + ", has used: " + String.format("%.2f", usedMoney)
+                        + ", remain: " + String.format("%.2f", (totalMoney- usedMoney));
+                textView.setText(showRes);
             }
         }catch (Exception e) {
             LogUtil.e(TAG, "cursor == null" + (cursor == null));
@@ -267,8 +270,11 @@ public class AccountMainActivity extends BaseActivity {
                     startActivity(intent);
                     break;
                 case R.id.icon_image:
-                    Toast.makeText(mContext, "The total consumption: " + databaseHelper.getTotalMoneyForCursor(null), Toast.LENGTH_SHORT).show();
-                    LogUtil.d(TAG, "call icon_image test. " + "The total consumption: " + databaseHelper.getTotalMoneyForCursor(null));
+                    Intent intent1 = new Intent();
+                    intent1.setClassName(AccountConstants.ACCOUNT_PACKAGE, AccountConstants.ACTIVITY_ACCOUNT_DIALOG);
+                    intent1.putExtra(AccountConstants.DIALOG_TYPE, AccountConstants.DIALOG_TYPE_SET_LIMIT_MONEY);
+                    intent1.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    mContext.startActivity(intent1);
                     break;
                 default:break;
             }
@@ -284,17 +290,21 @@ public class AccountMainActivity extends BaseActivity {
                 case R.id.nav_logout:
                     mContext.sendBroadcast(new Intent(BroadcastUtil.FORCE_OFFLINE));
                     break;
-                case R.id.nav_task:
+                case R.id.nav_delete:
                     intent1.setClassName(AccountConstants.ACCOUNT_PACKAGE, AccountConstants.ACTIVITY_ACCOUNT_DIALOG);
                     intent1.putExtra(AccountConstants.DIALOG_TYPE, AccountConstants.DIALOG_TYPE_DELETE_ALL);
                     intent1.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     mContext.startActivity(intent1);
                     break;
-                case R.id.nav_mail:
+                case R.id.nav_query:
                     intent1.setClassName(AccountConstants.ACCOUNT_PACKAGE, AccountConstants.ACTIVITY_ACCOUNT_FILTRATE);
                     intent1.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     mContext.startActivity(intent1);
                     break;
+                case R.id.nav_category:
+                    intent1.setClassName(AccountConstants.ACCOUNT_PACKAGE, AccountConstants.ACTIVITY_ACCOUNT_CATEGORY);
+                    intent1.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    mContext.startActivity(intent1);
                 default:break;
             }
             mDrawerLayout.closeDrawers();

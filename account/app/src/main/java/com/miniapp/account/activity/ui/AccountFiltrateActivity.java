@@ -11,14 +11,13 @@ import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+import java.util.ArrayList;
 
 import com.miniapp.account.LogUtil;
 import com.miniapp.account.R;
 import com.miniapp.account.activity.AccountCursorAdapter;
 import com.miniapp.account.db.AccountItemDb;
 import com.miniapp.account.service.AccountService;
-
-import java.util.ArrayList;
 
 public class AccountFiltrateActivity extends BaseActivity {
     private static final String TAG = "AccountFiltrateActivity";
@@ -61,14 +60,24 @@ public class AccountFiltrateActivity extends BaseActivity {
             mAccountService.updateDbData();
             mDateList = mAccountService.getDateList();
             mDateList.add(0, "all date");
-            mDateAdapter = new ArrayAdapter<String>(mContext, android.R.layout.simple_spinner_item, mDateList);
+            mDateAdapter = new ArrayAdapter<String>(mContext, R.layout.spinner_item, mDateList);
             mDateAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             mDateSpinner.setAdapter(mDateAdapter);
-            //mDateSpinner.setOnItemSelectedListener(new SpinnerSelectedListener());
+//            mDateSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+//                @Override
+//                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+//
+//                }
+//
+//                @Override
+//                public void onNothingSelected(AdapterView<?> parent) {
+//
+//                }
+//            });
 
             mNameList = mAccountService.getUserNameList();
             mNameList.add(0, "all username");
-            mNameAdapter = new ArrayAdapter<String>(mContext, android.R.layout.simple_spinner_item, mNameList);
+            mNameAdapter = new ArrayAdapter<String>(mContext, R.layout.spinner_item, mNameList);
             mNameAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             mNameSpinner.setAdapter(mNameAdapter);
 

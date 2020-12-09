@@ -8,4 +8,7 @@
 
     <color name="white">#fff</color>
     <color name="red">#ff0000</color>
+    <color name="blue">#99CCFF</color>
+    <color name="whiteSmoke">#CCCCCC</color>
+
 </resources>

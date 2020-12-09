@@ -5,12 +5,18 @@
     <string name="nav_menu_logout">Logout</string>
     <string name="nav_menu_delete">DeleteAll</string>
     <string name="nav_menu_query">Query</string>
+    <string name="nav_menu_storage">Storage</string>
+    <string name="nav_menu_category">Category</string>
 
     <!--Popup string-->
     <string name="dialog_warning_title">Warning</string>
     <string name="dialog_logout_msg">Do you want to logout?</string>
     <string name="dialog_delete_all_msg">Do you want to Delete All Data?</string>
+    <string name="dialog_add_category">Do you want to add a category?</string>
+    <string name="dialog_set_limit_money">Set limit money.</string>
     <string name="dialog_button_yes">Yes</string>
+    <string name="dialog_button_add">Add</string>
+    <string name="dialog_button_set">Set</string>
     <string name="dialog_button_no">No</string>
 
     <!--Account Db-->
@@ -26,8 +32,10 @@
     <string name="menu_import">Import</string>
     <string name="menu_share">Share</string>
 
-
+    <!--Button-->
     <string name="btn_query">Query</string>
 
+    <!--Toast-->
+    <string name="toast_finish_all">Please finish all information.</string>
 
 </resources>
