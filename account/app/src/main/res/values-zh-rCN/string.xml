@@ -31,8 +31,20 @@
     <string name="menu_export">导出</string>
     <string name="menu_import">导入</string>
     <string name="menu_share">分享</string>
+    <string name="menu_manage">管理</string>
 
     <!--Button-->
     <string name="btn_query">查询</string>
+    <string name="btn_delete">删除</string>
+
+    <!--Toast-->
+    <string name="toast_finish_all">请完善全部信息.</string>
+    <string name="toast_failed_get_image">获取图片失败.</string>
+    <string name="toast_date_error">数据获取失败.</string>
+    <string name="toast_file_no_exist">"文件不存在 !!!"</string>
+    <string name="toast_import_num">导入个数 = </string>
+    <string name="toast_login_error">账号或密码错误.</string>
+    <string name="toast_add_category_first">请先添加用户类型.</string>
+    <string name="toast_delete_db_first">请首先删除账单该用户的全部数据.</string>
 
 </resources>

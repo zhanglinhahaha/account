@@ -56,7 +56,7 @@ public class AccountCursorAdapter extends SimpleCursorAdapter {
             final int id = mCursor.getInt(mCursor.getColumnIndex(AccountItemDb.ID));
 
             if(mOnClickListener == null) {
-                mViewHolder.btnDelete.setVisibility(View.INVISIBLE);
+                mViewHolder.btnDelete.setVisibility(View.GONE);
             } else {
                 mViewHolder.btnDelete.setTag(id);
                 convertView.setOnClickListener(new View.OnClickListener() {

@@ -13,12 +13,6 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".activity.ui.AccountCategoryActivity"></activity>
-        <activity android:name=".activity.ui.AccountFiltrateActivity"></activity>
-        <activity android:name=".activity.ui.AccountAddOrUpdateActivity"></activity>
-        <activity
-            android:name=".activity.ui.AccountMainActivity"
-            android:launchMode="singleTask"></activity>
         <activity android:name=".activity.ui.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -26,8 +20,17 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".activity.ui.AccountCategoryActivity" />
+        <activity android:name=".activity.ui.AccountFiltrateActivity" />
+        <activity
+            android:name=".activity.ui.AccountAddOrUpdateActivity"
+            android:launchMode="singleTop"></activity>
+        <activity
+            android:name=".activity.ui.AccountMainActivity"
+            android:launchMode="singleTask"></activity>
         <activity
             android:name=".activity.ui.AccountDialog"
+            android:launchMode="singleTop"
             android:theme="@style/AccountDialog" />
         <activity android:name=".activity.ui.BaseActivity" />
 

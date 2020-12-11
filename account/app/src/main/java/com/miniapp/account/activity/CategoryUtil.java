@@ -76,4 +76,16 @@ public class CategoryUtil {
         }
         initCategory();
     }
+
+    public void deleteUserCate(String username) {
+        LogUtil.d(TAG, "deleteUserCate() called with: username = [" + username + "]");
+        if(mUserNameList.contains(username)) {
+            mUserNameList.remove(username);
+            SharedPreferences.Editor mEditor = mPreferences.edit();
+            mEditor.putString(username, "0");
+            mEditor.apply();
+            setUserNameList();
+        }
+        initCategory();
+    }
 }

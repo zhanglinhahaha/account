@@ -8,11 +8,9 @@ import android.database.Cursor;
 import android.os.IBinder;
 
 import com.miniapp.account.LogUtil;
-import com.miniapp.account.R;
-import com.miniapp.account.activity.AccountCategoryAdapter;
+import com.miniapp.account.activity.AccountConstants;
 import com.miniapp.account.activity.CategoryUtil;
 import com.miniapp.account.broadcast.AccountBroadcastReceiver;
-import com.miniapp.account.broadcast.BroadcastUtil;
 import com.miniapp.account.db.AccountItemDb;
 
 import java.util.ArrayList;
@@ -54,7 +52,7 @@ public class AccountService extends Service {
         ArrayList<String> categoryList = categoryUtil.getCategoryUserNameList();
         for(String name : mUserNameList) {
             if(!categoryList.contains(name)) {
-                categoryUtil.addUserCate(name, "0");
+                categoryUtil.addUserCate(name, AccountConstants.IMAGE_IS_NULL);
             }
         }
     }
@@ -68,7 +66,7 @@ public class AccountService extends Service {
 
     private void initIntentFilter() {
         IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(BroadcastUtil.FORCE_OFFLINE);
+        intentFilter.addAction(AccountConstants.FORCE_OFFLINE);
         intentFilter.addAction("zltext");
         registerReceiver(mReceiver, intentFilter);
     }

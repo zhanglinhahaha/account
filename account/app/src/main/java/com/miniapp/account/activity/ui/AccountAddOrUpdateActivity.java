@@ -23,6 +23,7 @@ import com.miniapp.account.LogUtil;
 import com.miniapp.account.R;
 import com.miniapp.account.activity.AccountConstants;
 import com.miniapp.account.activity.CategoryUtil;
+import com.miniapp.account.activity.Util;
 import com.miniapp.account.db.AccountItemDb;
 
 public class AccountAddOrUpdateActivity extends BaseActivity {
@@ -49,7 +50,6 @@ public class AccountAddOrUpdateActivity extends BaseActivity {
         mComment = (EditText) findViewById(R.id.db_comment);
         mDate = (EditText) findViewById(R.id.db_date);
         mAddButton = (Button) findViewById(R.id.db_add);
-
         mAddOrUpdate = getIntent().getIntExtra(AccountConstants.ADD_OR_UPDATE_TYPE, 0);
         databaseHelper = AccountItemDb.getInstance(mContext);
     }
@@ -61,10 +61,18 @@ public class AccountAddOrUpdateActivity extends BaseActivity {
         initOnResume();
     }
 
+    @Override
+    protected void onDestroy() {
+        LogUtil.v(TAG, "onDestroy");
+        super.onDestroy();
+    }
+
     private void initOnResume() {
         if(mAddOrUpdate != 0) makeContent();
+
         mAddButton.setOnClickListener(mClickListener);
         mDate.setOnTouchListener(mTouchListener);
+        //don't show keyboard
         mDate.setInputType(InputType.TYPE_NULL);
         mUsername.setOnTouchListener(mTouchListener);
         mUsername.setInputType(InputType.TYPE_NULL);
@@ -106,7 +114,6 @@ public class AccountAddOrUpdateActivity extends BaseActivity {
                     showDatePickDialog(new DatePickerDialog.OnDateSetListener() {
                         @Override
                         public void onDateSet(DatePicker datePicker, int year, int month, int day) {
-                            //选择日期过后执行的事件
                             mDate.setText(year + "-" + (month + 1) + "-" + day);
                             mDate.setSelection(mDate.getText().toString().length());
                         }
@@ -124,6 +131,9 @@ public class AccountAddOrUpdateActivity extends BaseActivity {
         public void onClick(View v) {
             LogUtil.d(TAG, v.toString());
             if (v.getId() == R.id.db_add) {
+                if(Util.isFastDoubleClick()) {
+                    return;
+                }
                 checkItemInfo();
             }
         }
@@ -137,6 +147,7 @@ public class AccountAddOrUpdateActivity extends BaseActivity {
             month =Integer.parseInt(curDate.substring(curDate.indexOf("-")+1,curDate.lastIndexOf("-")))-1 ;
             day =Integer.parseInt(curDate.substring(curDate.lastIndexOf("-")+1,curDate.length())) ;
         } catch (Exception e) {
+            LogUtil.e(TAG, "curDate is empty or format error" + e);
             e.printStackTrace();
             year = calendar.get(Calendar.YEAR);
             month = calendar.get(Calendar.MONTH);
@@ -148,20 +159,25 @@ public class AccountAddOrUpdateActivity extends BaseActivity {
 
     private void showListPopup() {
         final ArrayList<String> list = CategoryUtil.getInstance(this).getCategoryUserNameList();
-        final ListPopupWindow listPopupWindow;
-        listPopupWindow = new ListPopupWindow(this);
-        listPopupWindow.setAdapter(new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1, list));
-        listPopupWindow.setAnchorView(mUsername);
-        listPopupWindow.setModal(true);
-        listPopupWindow.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                mUsername.setText(list.get(i));
-                mUsername.setSelection(mUsername.getText().toString().length());
-                listPopupWindow.dismiss();
-            }
-        });
-        listPopupWindow.show();
+        if(list.size() > 0) {
+            final ListPopupWindow listPopupWindow;
+            listPopupWindow = new ListPopupWindow(this);
+            listPopupWindow.setAdapter(new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1, list));
+            listPopupWindow.setAnchorView(mUsername);
+            listPopupWindow.setModal(true);
+            listPopupWindow.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                    mUsername.setText(list.get(i));
+                    mUsername.setSelection(mUsername.getText().toString().length());
+                    listPopupWindow.dismiss();
+                }
+            });
+            listPopupWindow.show();
+        }else {
+            Toast.makeText(mContext, R.string.toast_add_category_first, Toast.LENGTH_SHORT).show();
+        }
+
     }
 
     private void checkItemInfo() {
@@ -172,7 +188,7 @@ public class AccountAddOrUpdateActivity extends BaseActivity {
 
         if(name.length() == 0 || priceStr.length() == 0
                 ||comment.length() == 0 || date.length() == 0) {
-            Toast.makeText(mContext, getResources().getString(R.string.toast_finish_all), Toast.LENGTH_SHORT).show();
+            Toast.makeText(mContext, R.string.toast_finish_all, Toast.LENGTH_SHORT).show();
             return;
         }
 

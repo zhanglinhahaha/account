@@ -12,6 +12,7 @@ import android.widget.Toast;
 import com.miniapp.account.R;
 import com.miniapp.account.LogUtil;
 import com.miniapp.account.activity.LoginUtil;
+import com.miniapp.account.activity.Util;
 import com.miniapp.account.service.AccountService;
 
 /**
@@ -57,6 +58,9 @@ public class LoginActivity extends BaseActivity {
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if(Util.isFastDoubleClick()) {
+                    return;
+                }
                 String account = accountEdit.getText().toString();
                 String password = passwordEdit.getText().toString();
                 if(account.equals("admin") && password.equals("970521")) {
@@ -69,7 +73,7 @@ public class LoginActivity extends BaseActivity {
                     gotoMainActivity();
                 }else {
                     LogUtil.e(TAG,  "account or password is error");
-                    Toast.makeText(mContext,"account or password is error",
+                    Toast.makeText(mContext,R.string.toast_login_error,
                             Toast.LENGTH_SHORT).show();
                 }
             }

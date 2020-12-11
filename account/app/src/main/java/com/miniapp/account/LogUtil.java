@@ -1,18 +1,14 @@
 package com.miniapp.account;
 
-import android.os.Environment;
 import android.util.Log;
-
-import com.miniapp.account.activity.AccountConstants;
-
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 
+import com.miniapp.account.activity.AccountConstants;
 /**
  * Created by zl on 19-10-25.
  * 打印日志工具
@@ -29,9 +25,10 @@ public class LogUtil {
     public static final int ERROR = 5;
     public static final int NOTHING = 6;
 
-    private static SimpleDateFormat myLogSdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-    private static SimpleDateFormat logfile = new SimpleDateFormat("yyyy-MM-dd");
-    private static String MYLOGFILEName = "log.txt";
+    private static final SimpleDateFormat MY_LOG_SDF = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    private static final String MY_LOG_FILE_NAME = "log.txt";
+    private static final String MY_LOG_FILE_NAME_BACK = "log_back.txt";
+    private static final int FILE_SIZE = 2 * 1024 * 1024;
 
     private static int mLevel = VERBOSE;
 
@@ -91,17 +88,25 @@ public class LogUtil {
 
     private static void writeLogToFile(String mylogtype, String tag, String text) {
         Date nowTime = new Date();
-        String needWriteFile = logfile.format(nowTime);
-        String needWriteMessage = myLogSdf.format(nowTime) + "    " + mylogtype + "    " + tag + "    " + text;
+        String needWriteMessage = MY_LOG_SDF.format(nowTime) + "    " + mylogtype + "    " + tag + "    " + text;
         File dirsFile = new File(AccountConstants.ACCOUNT_DIR_PATH);
         if (!dirsFile.exists()){
             dirsFile.mkdirs();
         }
-        File file = new File(dirsFile.toString(), needWriteFile + MYLOGFILEName);
+        File file = new File(dirsFile.toString(),  MY_LOG_FILE_NAME);
         if (!file.exists()) {
             try {
                 file.createNewFile();
             } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }else {
+            long size = file.length();
+            if(size >= FILE_SIZE) {
+                File file1 = new File(dirsFile.toString(), MY_LOG_FILE_NAME_BACK);
+                if(file1.exists()) file1.delete();
+                file.renameTo(file1);
+                file.delete();
             }
         }
 
@@ -115,21 +120,5 @@ public class LogUtil {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    public static void delFile() {
-        String needDelFile= logfile.format(getDateBefore());
-        File file = new File(AccountConstants.ACCOUNT_DIR_PATH, needDelFile + MYLOGFILEName);
-        if (file.exists()) {
-            file.delete();
-        }
-    }
-
-    private static Date getDateBefore() {
-        Date nowtTime = new Date();
-        Calendar now = Calendar.getInstance();
-        now.setTime(nowtTime);
-        now.set(Calendar.DATE, now.get(Calendar.DATE) - AccountConstants.SDCARD_LOG_FILE_SAVE_DAYS);
-        return now.getTime();
     }
 }

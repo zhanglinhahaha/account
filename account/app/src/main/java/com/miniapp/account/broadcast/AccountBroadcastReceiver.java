@@ -12,20 +12,32 @@ import com.miniapp.account.activity.AccountConstants;
  */
 public class AccountBroadcastReceiver extends BroadcastReceiver {
     private static final String TAG = "AccountBroadcastReceive";
+    private static int type = 0;
 
     @Override
     public void onReceive(final Context context, final Intent intent) {
         String action = intent.getAction();
         LogUtil.d(TAG,"onReceiver() : " + action);
-        if(action.equals(BroadcastUtil.FORCE_OFFLINE)) {
+        if(action.equals(AccountConstants.FORCE_OFFLINE)) {
             Intent intent1 = new Intent();
             intent1.setClassName(AccountConstants.ACCOUNT_PACKAGE, AccountConstants.ACTIVITY_ACCOUNT_DIALOG);
             intent1.putExtra(AccountConstants.DIALOG_TYPE, AccountConstants.DIALOG_TYPE_LOGOUT);
             intent1.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             context.startActivity(intent1);
         } else if(action.equals("zltext")) {
-            Intent intent1 = new Intent("com.hkmc.telematics.apps.Vrm.settings.ui.ServiceActivationPopUp");
-            intent1.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_NO_ANIMATION);
+//            Intent intent1 = new Intent("com.hkmc.telematics.apps.Vrm.settings.ui.ServiceActivationPopUp");
+//            intent1.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_NO_ANIMATION);
+//            context.startActivity(intent1);
+            Intent intent1 = new Intent();
+            intent1.setClassName(AccountConstants.ACCOUNT_PACKAGE, AccountConstants.ACTIVITY_ACCOUNT_DIALOG);
+            if(type == 0) {
+                intent1.putExtra(AccountConstants.DIALOG_TYPE, AccountConstants.DIALOG_TYPE_SET_LIMIT_MONEY);
+                type = 1;
+            }else {
+                intent1.putExtra(AccountConstants.DIALOG_TYPE, AccountConstants.DIALOG_TYPE_ADD_CATEGORY);
+                type = 0;
+            }
+            intent1.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             context.startActivity(intent1);
         }
     }

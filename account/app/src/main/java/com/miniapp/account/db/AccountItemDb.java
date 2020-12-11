@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import com.miniapp.account.LogUtil;
+import com.miniapp.account.service.AccountService;
 
 /**
  * Created by zl on 20-4-30.
@@ -75,11 +76,13 @@ public class AccountItemDb extends SQLiteOpenHelper {
         database.delete(TABLE_ACCOUNT, ID + " = ?",
                 new String[]{""+id});
         LogUtil.d(TAG, "delete: " + id);
+        AccountService.getService(mContext).updateDbData();
     }
 
     public void deleteAll() {
         database.execSQL("delete from " + TABLE_ACCOUNT);
         LogUtil.d(TAG, "deleteAll()");
+        AccountService.getService(mContext).updateDbData();
     }
 
     public Cursor query(Integer id) {

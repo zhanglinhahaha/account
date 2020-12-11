@@ -32,7 +32,7 @@ import com.miniapp.account.R;
 import com.miniapp.account.activity.AccountConstants;
 import com.miniapp.account.activity.AccountCursorAdapter;
 import com.miniapp.account.activity.LoginUtil;
-import com.miniapp.account.broadcast.BroadcastUtil;
+import com.miniapp.account.activity.Util;
 import com.miniapp.account.db.AccountItemDb;
 import com.miniapp.account.db.DbToXmlManager;
 import com.miniapp.account.db.XmlToDbManager;
@@ -65,7 +65,7 @@ public class AccountMainActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_account_main);
-        LogUtil.d(TAG, "onCreate");
+        LogUtil.v(TAG, "onCreate");
         mContext = this;
         mAccountService = AccountService.getService(this);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -74,15 +74,13 @@ public class AccountMainActivity extends BaseActivity {
         mfab = (FloatingActionButton)findViewById(R.id.fab);
         mContentsList = (ListView) findViewById(R.id.itemList);
         swipeRefresh = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh);
-
-        LogUtil.delFile();//delete logFile once a week
         applyForPermission();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        LogUtil.d(TAG, "onResume");
+        LogUtil.v(TAG, "onResume");
         initOnResume();
     }
 
@@ -135,9 +133,8 @@ public class AccountMainActivity extends BaseActivity {
                 int totalMoney = LoginUtil.getInstance(mContext).getLimitMoney();
                 double usedMoney = databaseHelper.getTotalMoneyForCursor(null);
 
-                String showRes = "Total: " + totalMoney
-                        + ", has used: " + String.format("%.2f", usedMoney)
-                        + ", remain: " + String.format("%.2f", (totalMoney- usedMoney));
+                String showRes = "Used: " + String.format("%.2f", usedMoney)
+                        + "\nRemain: " + String.format("%.2f", (totalMoney- usedMoney));
                 textView.setText(showRes);
             }
         }catch (Exception e) {
@@ -212,7 +209,7 @@ public class AccountMainActivity extends BaseActivity {
             case R.id.importDb:
                 XmlToDbManager importFile = new XmlToDbManager(mContext);
                 int num = importFile.start(path);
-                Toast.makeText(mContext, "import Num = " + num, Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext, R.string.toast_import_num + num, Toast.LENGTH_SHORT).show();
                 refresh();
                 break;
             case R.id.share:
@@ -242,7 +239,7 @@ public class AccountMainActivity extends BaseActivity {
             Intent chooser = Intent.createChooser(shareIntent, "Share file...");
             mContext.startActivity(chooser);
         }else {
-            Toast.makeText(mContext, "The file don't exist !!!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(mContext, R.string.toast_file_no_exist, Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -263,6 +260,7 @@ public class AccountMainActivity extends BaseActivity {
     private View.OnClickListener mButtonClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
+            if(Util.isFastDoubleClick()) return;
             LogUtil.d(TAG, "mButtonClickListener called: " + v.toString());
             switch (v.getId()) {
                 case R.id.fab:
@@ -288,7 +286,7 @@ public class AccountMainActivity extends BaseActivity {
             Intent intent1 = new Intent();
             switch (menuItem.getItemId()) {
                 case R.id.nav_logout:
-                    mContext.sendBroadcast(new Intent(BroadcastUtil.FORCE_OFFLINE));
+                    mContext.sendBroadcast(new Intent(AccountConstants.FORCE_OFFLINE));
                     break;
                 case R.id.nav_delete:
                     intent1.setClassName(AccountConstants.ACCOUNT_PACKAGE, AccountConstants.ACTIVITY_ACCOUNT_DIALOG);
@@ -298,6 +296,7 @@ public class AccountMainActivity extends BaseActivity {
                     break;
                 case R.id.nav_query:
                     intent1.setClassName(AccountConstants.ACCOUNT_PACKAGE, AccountConstants.ACTIVITY_ACCOUNT_FILTRATE);
+                    intent1.putExtra(AccountConstants.QUERY_CATEGORY, "0");
                     intent1.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     mContext.startActivity(intent1);
                     break;

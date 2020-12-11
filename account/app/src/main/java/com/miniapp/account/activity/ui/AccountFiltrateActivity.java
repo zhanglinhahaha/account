@@ -4,9 +4,9 @@ import android.content.Context;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -15,6 +15,7 @@ import java.util.ArrayList;
 
 import com.miniapp.account.LogUtil;
 import com.miniapp.account.R;
+import com.miniapp.account.activity.AccountConstants;
 import com.miniapp.account.activity.AccountCursorAdapter;
 import com.miniapp.account.db.AccountItemDb;
 import com.miniapp.account.service.AccountService;
@@ -35,34 +36,48 @@ public class AccountFiltrateActivity extends BaseActivity {
     private Cursor mCursor = null;
     private ListView mContentsList = null;
     private AccountItemDb databaseHelper = null;
+    private LinearLayout mQuerySpinnerLayout = null;
+    private String mQueryCategory = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_account_filtrate);
+        LogUtil.v(TAG, "onCreate");
         mContext = this;
         mDateSpinner = (Spinner) findViewById(R.id.date_spinner);
         mNameSpinner = (Spinner) findViewById(R.id.username_spinner);
         mBtnQuery = (Button) findViewById(R.id.btn_query);
         mContentsList = (ListView) findViewById(R.id.itemList);
         mSumView = (TextView) findViewById(R.id.querySum);
+        mQuerySpinnerLayout = (LinearLayout) findViewById(R.id.queryLayout);
+        mQueryCategory = getIntent().getStringExtra(AccountConstants.QUERY_CATEGORY);
+        databaseHelper = AccountItemDb.getInstance(mContext);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+        LogUtil.v(TAG, "onResume");
         initOnResume();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        LogUtil.v(TAG, "onDestroy");
     }
 
     private void initOnResume() {
         mAccountService = AccountService.getService(mContext);
         if(mAccountService != null) {
-            mAccountService.updateDbData();
-            mDateList = mAccountService.getDateList();
-            mDateList.add(0, "all date");
-            mDateAdapter = new ArrayAdapter<String>(mContext, R.layout.spinner_item, mDateList);
-            mDateAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            mDateSpinner.setAdapter(mDateAdapter);
+            if(mQueryCategory.equals("0")) {
+                mAccountService.updateDbData();
+                mDateList = mAccountService.getDateList();
+                mDateList.add(0, "all date");
+                mDateAdapter = new ArrayAdapter<String>(mContext, R.layout.spinner_item, mDateList);
+                mDateAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                mDateSpinner.setAdapter(mDateAdapter);
 //            mDateSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 //                @Override
 //                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -75,27 +90,30 @@ public class AccountFiltrateActivity extends BaseActivity {
 //                }
 //            });
 
-            mNameList = mAccountService.getUserNameList();
-            mNameList.add(0, "all username");
-            mNameAdapter = new ArrayAdapter<String>(mContext, R.layout.spinner_item, mNameList);
-            mNameAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            mNameSpinner.setAdapter(mNameAdapter);
+                mNameList = mAccountService.getUserNameList();
+                mNameList.add(0, "all username");
+                mNameAdapter = new ArrayAdapter<String>(mContext, R.layout.spinner_item, mNameList);
+                mNameAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                mNameSpinner.setAdapter(mNameAdapter);
 
-            mBtnQuery.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    String username = mNameSpinner.getSelectedItem().toString();
-                    String date = mDateSpinner.getSelectedItem().toString();
-                    LogUtil.d(TAG, "Query username: " + username + ", date: " + date);
-                    if(username.equals("all username")) username = null;
-                    if(date.equals("all date")) date = null;
-                    databaseHelper = AccountItemDb.getInstance(mContext);
-                    mCursor = databaseHelper.queryDateAndName(date, username);
-                    makeContent();
-                }
-            });
+                mBtnQuery.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        String username = mNameSpinner.getSelectedItem().toString();
+                        String date = mDateSpinner.getSelectedItem().toString();
+                        LogUtil.d(TAG, "Query username: " + username + ", date: " + date);
+                        if (username.equals("all username")) username = null;
+                        if (date.equals("all date")) date = null;
+                        mCursor = databaseHelper.queryDateAndName(date, username);
+                        makeContent();
+                    }
+                });
+            }else {
+                mCursor = databaseHelper.queryDateAndName(null, mQueryCategory);
+                mQuerySpinnerLayout.setVisibility(View.GONE);
+            }
         }else {
-            Toast.makeText(mContext, "Data Error", Toast.LENGTH_SHORT).show();
+            Toast.makeText(mContext, R.string.toast_date_error, Toast.LENGTH_SHORT).show();
         }
         makeContent();
     }

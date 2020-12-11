@@ -78,7 +78,7 @@ public class AccountDialog extends BaseActivity {
     }
 
     private void showAlertDialog() {
-        LogUtil.v(TAG, "showAlertDialog" + getResources().getString(titleMsg));
+        LogUtil.v(TAG, "showAlertDialog, " + getResources().getString(titleMsg));
         AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
         builder.setTitle(R.string.dialog_warning_title);
         builder.setMessage(titleMsg);
@@ -115,6 +115,7 @@ public class AccountDialog extends BaseActivity {
     }
 
     private void showOneEditTextDialog() {
+        LogUtil.v(TAG, "showOneEditTextDialog, " + getResources().getString(titleMsg));
         LayoutInflater inflater = LayoutInflater.from(mContext);
         final View viewCategory = inflater.inflate(R.layout.add_category, null);
         final EditText etCategoryName = viewCategory.findViewById(R.id.input_category_name);
