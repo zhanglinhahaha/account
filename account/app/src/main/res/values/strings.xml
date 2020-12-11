@@ -42,7 +42,7 @@
     <string name="toast_failed_get_image">failed to get image.</string>
     <string name="toast_date_error">Data Error.</string>
     <string name="toast_file_no_exist">"The file don't exist !!!"</string>
-    <string name="toast_import_num">import Num = </string>
+    <string name="toast_import_num">"import Num = %s"</string>
     <string name="toast_login_error">account or password is error.</string>
     <string name="toast_add_category_first">Please add a category first.</string>
     <string name="toast_delete_db_first">Please delete the data in account first.</string>

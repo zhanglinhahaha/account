@@ -72,12 +72,13 @@ public class AccountCategoryActivity extends BaseActivity {
         setSupportActionBar(mToolbar);
         ActionBar actionBar = getSupportActionBar();
         if(actionBar != null) actionBar.setTitle(R.string.nav_menu_category);
-        mGridLayoutManager = new GridLayoutManager(mContext, 2);
-        mRecyclerView.setLayoutManager(mGridLayoutManager);
         makeContent(isDeleteStatus);
     }
 
     private void makeContent(boolean isDeleteStatus) {
+        int spanCount = (isDeleteStatus) ? 1 : 2;
+        mGridLayoutManager = new GridLayoutManager(mContext, spanCount);
+        mRecyclerView.setLayoutManager(mGridLayoutManager);
         mAdapter = new AccountCategoryAdapter(categoryUtil.getUserCateList(), this, mOnClickListener, isDeleteStatus);
         mRecyclerView.setAdapter(mAdapter);
     }

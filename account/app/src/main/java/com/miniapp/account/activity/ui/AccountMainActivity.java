@@ -209,7 +209,7 @@ public class AccountMainActivity extends BaseActivity {
             case R.id.importDb:
                 XmlToDbManager importFile = new XmlToDbManager(mContext);
                 int num = importFile.start(path);
-                Toast.makeText(mContext, R.string.toast_import_num + num, Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext, String.format(getString(R.string.toast_import_num), String.valueOf(num)), Toast.LENGTH_SHORT).show();
                 refresh();
                 break;
             case R.id.share:

@@ -42,7 +42,7 @@
     <string name="toast_failed_get_image">获取图片失败.</string>
     <string name="toast_date_error">数据获取失败.</string>
     <string name="toast_file_no_exist">"文件不存在 !!!"</string>
-    <string name="toast_import_num">导入个数 = </string>
+    <string name="toast_import_num">"导入个数 = %s"</string>
     <string name="toast_login_error">账号或密码错误.</string>
     <string name="toast_add_category_first">请先添加用户类型.</string>
     <string name="toast_delete_db_first">请首先删除账单该用户的全部数据.</string>
