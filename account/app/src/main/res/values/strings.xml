@@ -47,4 +47,7 @@
     <string name="toast_add_category_first">Please add a category first.</string>
     <string name="toast_delete_db_first">Please delete the data in account first.</string>
 
+    <!--Common-->
+    <string name="not_contain">not</string>
+
 </resources>

@@ -47,4 +47,7 @@
     <string name="toast_add_category_first">请先添加用户类型.</string>
     <string name="toast_delete_db_first">请首先删除账单该用户的全部数据.</string>
 
+
+    <!--Common-->
+    <string name="not_contain">非</string>
 </resources>

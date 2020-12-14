@@ -93,7 +93,7 @@ public class AccountItemDb extends SQLiteOpenHelper {
         return cursor;
     }
 
-    public Cursor queryDateAndName(String date, String username) {
+    public Cursor queryDateAndName(String date, String username, boolean isNotContain) {
         Cursor cursor = null;
         String selection = null;
         String[] selectionArg = null;
@@ -104,14 +104,14 @@ public class AccountItemDb extends SQLiteOpenHelper {
             if(date != null) {
                 if(username != null) {
                     selection = ACCOUNT_ITEM_DATE + " LIKE ? " + " AND "
-                            + ACCOUNT_ITEM_USERNAME + "=?";
+                            + ACCOUNT_ITEM_USERNAME + (isNotContain ? " != ? ": " = ? ");
                     selectionArg = new String[]{date + "%", username};
                 }else {
                     selection = ACCOUNT_ITEM_DATE + " LIKE ? ";
                     selectionArg = new String[]{date + "%"};
                 }
             }else {
-                selection = ACCOUNT_ITEM_USERNAME + "=?";
+                selection = ACCOUNT_ITEM_USERNAME + (isNotContain ? " != ? ": " = ? ");
                 selectionArg = new String[]{username};
             }
         }

@@ -91,6 +91,11 @@ public class AccountFiltrateActivity extends BaseActivity {
 //            });
 
                 mNameList = mAccountService.getUserNameList();
+
+                for(int i = mNameList.size(), j = 0; i > 0; --i, ++j) {
+                    String tmp = getResources().getString(R.string.not_contain) + " " + mNameList.get(j);
+                    mNameList.add(tmp);
+                }
                 mNameList.add(0, "all username");
                 mNameAdapter = new ArrayAdapter<String>(mContext, R.layout.spinner_item, mNameList);
                 mNameAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -99,17 +104,24 @@ public class AccountFiltrateActivity extends BaseActivity {
                 mBtnQuery.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        boolean isNotContain = false;
                         String username = mNameSpinner.getSelectedItem().toString();
                         String date = mDateSpinner.getSelectedItem().toString();
-                        LogUtil.d(TAG, "Query username: " + username + ", date: " + date);
                         if (username.equals("all username")) username = null;
+                        else if(username.contains(" ")) {
+                            username = username.substring(username.lastIndexOf(" ") + 1);
+                            isNotContain = true;
+                        }
                         if (date.equals("all date")) date = null;
-                        mCursor = databaseHelper.queryDateAndName(date, username);
+
+                        LogUtil.d(TAG, "Query username: " + username + ", date: " + date + ", isNotContain: " + isNotContain);
+
+                        mCursor = databaseHelper.queryDateAndName(date, username, isNotContain);
                         makeContent();
                     }
                 });
             }else {
-                mCursor = databaseHelper.queryDateAndName(null, mQueryCategory);
+                mCursor = databaseHelper.queryDateAndName(null, mQueryCategory, false);
                 mQuerySpinnerLayout.setVisibility(View.GONE);
             }
         }else {
