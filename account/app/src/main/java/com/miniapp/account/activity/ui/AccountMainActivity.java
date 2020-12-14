@@ -200,7 +200,7 @@ public class AccountMainActivity extends BaseActivity {
                 break;
             case R.id.exportDb:
                 DbToXmlManager exportFile = new DbToXmlManager(mContext);
-                if(exportFile.start(path) > 0) {
+                if(exportFile.start(path, databaseHelper.getCursor()) > 0) {
                     Toast.makeText(mContext, path, Toast.LENGTH_SHORT).show();
                 }else {
                     LogUtil.e(TAG, "exportFile failed.");

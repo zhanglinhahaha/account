@@ -5,7 +5,6 @@ package com.miniapp.account.activity;
  */
 public class Util {
     private static final int HALF_OF_ONE_S = 500;
-
     private static long lastClickTime = 0;
     /**
      * deny click button quickly

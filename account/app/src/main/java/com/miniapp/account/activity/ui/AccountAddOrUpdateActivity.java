@@ -16,6 +16,8 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ListPopupWindow;
 import android.widget.Toast;
+
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 
@@ -114,7 +116,11 @@ public class AccountAddOrUpdateActivity extends BaseActivity {
                     showDatePickDialog(new DatePickerDialog.OnDateSetListener() {
                         @Override
                         public void onDateSet(DatePicker datePicker, int year, int month, int day) {
-                            mDate.setText(year + "-" + (month + 1) + "-" + day);
+                            String timeTmp = year + "-"
+                                    + (month+1 > 9 ? month+1 : ("0" + (month+1))) + "-"
+                                    + (day > 9 ? day : "0" + day);
+                            LogUtil.d(TAG, "timeTmp: " + timeTmp);
+                            mDate.setText(timeTmp);
                             mDate.setSelection(mDate.getText().toString().length());
                         }
                     }, mDate.getText().toString());
@@ -141,19 +147,19 @@ public class AccountAddOrUpdateActivity extends BaseActivity {
 
     private void showDatePickDialog(DatePickerDialog.OnDateSetListener listener, String curDate) {
         Calendar calendar = Calendar.getInstance();
-        int year = 0,month = 0,day = 0;
+        int year = 0, month = 0, day = 0;
         try {
-            year =Integer.parseInt(curDate.substring(0,curDate.indexOf("-"))) ;
-            month =Integer.parseInt(curDate.substring(curDate.indexOf("-")+1,curDate.lastIndexOf("-")))-1 ;
-            day =Integer.parseInt(curDate.substring(curDate.lastIndexOf("-")+1,curDate.length())) ;
+            year =Integer.parseInt(curDate.substring(0, curDate.indexOf("-"))) ;
+            month =Integer.parseInt(curDate.substring(curDate.indexOf("-") + 1, curDate.lastIndexOf("-"))) - 1 ;
+            day =Integer.parseInt(curDate.substring(curDate.lastIndexOf("-") + 1, curDate.length())) ;
         } catch (Exception e) {
             LogUtil.e(TAG, "curDate is empty or format error" + e);
             e.printStackTrace();
             year = calendar.get(Calendar.YEAR);
             month = calendar.get(Calendar.MONTH);
-            day=calendar.get(Calendar.DAY_OF_MONTH);
+            day = calendar.get(Calendar.DAY_OF_MONTH);
         }
-        DatePickerDialog datePickerDialog = new DatePickerDialog(this,DatePickerDialog.THEME_HOLO_LIGHT,listener, year,month , day);
+        DatePickerDialog datePickerDialog = new DatePickerDialog(this, DatePickerDialog.THEME_HOLO_LIGHT, listener, year, month, day);
         datePickerDialog.show();
     }
 
@@ -162,7 +168,7 @@ public class AccountAddOrUpdateActivity extends BaseActivity {
         if(list.size() > 0) {
             final ListPopupWindow listPopupWindow;
             listPopupWindow = new ListPopupWindow(this);
-            listPopupWindow.setAdapter(new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1, list));
+            listPopupWindow.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, list));
             listPopupWindow.setAnchorView(mUsername);
             listPopupWindow.setModal(true);
             listPopupWindow.setOnItemClickListener(new AdapterView.OnItemClickListener() {

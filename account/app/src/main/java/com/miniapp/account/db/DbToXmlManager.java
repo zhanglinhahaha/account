@@ -14,12 +14,11 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-
-import com.miniapp.account.LogUtil;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.StringWriter;
+
+import com.miniapp.account.LogUtil;
 
 /**
  * Created by zl on 20-12-3.
@@ -27,17 +26,17 @@ import java.io.StringWriter;
 public class DbToXmlManager {
     private static final String TAG = "AccountDbToXmlMgr";
 
-    private Context mCtx = null;
+    private Context mContext = null;
     private String mExportDir = null;
-    private AccountItemDb databaseHelper = null;
+    private Cursor mCursor = null;
 
     public DbToXmlManager(Context context){
-        mCtx = context;
-        databaseHelper = AccountItemDb.getInstance(context);
+        mContext = context;
     }
 
-    public long start(String path){
+    public long start(String path, Cursor cursor){
         mExportDir = path;
+        mCursor = cursor;
         return export();
     }
 
@@ -53,39 +52,36 @@ public class DbToXmlManager {
             LogUtil.e(TAG,"export() newDocumentBuilder Exception = " + e);
             e.printStackTrace();
         }
-        if(db!=null){
+
+        if(db != null){
             d = db.newDocument();
-            if(d!=null){
+            if(d != null){
                 root = d.createElement("Account");
                 d.appendChild(root);
             }
         }
 
-
-        Cursor cursor = null;
-        String data[][];
+        String[][] data;
 
         try {
-            cursor = databaseHelper.getCursor();
+            if (mCursor != null && mCursor.getCount() > 0) {
+                mCursor.moveToFirst();
+                int count = mCursor.getCount();
 
-            if (cursor != null && cursor.getCount() > 0) {
-                cursor.moveToFirst();
-                int count = cursor.getCount();
+                data = new String[count][mCursor.getColumnCount()];
 
-                data = new String[count][cursor.getColumnCount()];
-
-                for(int i=0; i<count; i++) {
-                    for(int j=0; j<cursor.getColumnCount(); j++) {
-                        data[i][j] = cursor.getString(j);
+                for(int i = 0; i < count; i++) {
+                    for(int j = 0; j < mCursor.getColumnCount(); j++) {
+                        data[i][j] = mCursor.getString(j);
                     }
-                    cursor.moveToNext();
+                    mCursor.moveToNext();
                 }
                 Element mof;
-                for(int i=0; i<count && d!=null && root!=null; i++) {
+                for(int i = 0; i < count && d != null && root != null; i++) {
                     mof = d.createElement("item");
                     root.appendChild(mof);
-                    for(int j=0; j<cursor.getColumnCount(); j++) {
-                        String column = cursor.getColumnName(j);
+                    for(int j = 0; j < mCursor.getColumnCount(); j++) {
+                        String column = mCursor.getColumnName(j);
                         Element cell = d.createElement(column);
                         cell.setTextContent(data[i][j]);
                         mof.appendChild(cell);
@@ -98,33 +94,33 @@ public class DbToXmlManager {
             e.printStackTrace();
         }
         finally {
-            if (cursor != null) {
-                cursor.close();
-                cursor = null;
+            if (mCursor != null) {
+                mCursor.close();
+                mCursor = null;
             }
         }
-        TransformerFactory tf = TransformerFactory.newInstance( );
+        TransformerFactory tf = TransformerFactory.newInstance();
         Transformer t = null;
         try {
-            t = tf.newTransformer( );
-        } catch ( TransformerConfigurationException e ) {
+            t = tf.newTransformer();
+        } catch (TransformerConfigurationException e) {
             LogUtil.e(TAG,"export() newTransformer Exception = " + e);
-            e.printStackTrace( );
+            e.printStackTrace();
         }
-        if(t!=null){
-            t.setOutputProperty( OutputKeys.ENCODING , "utf-8" );
-            t.setOutputProperty( OutputKeys.METHOD , "xml" );
-            t.setOutputProperty( OutputKeys.INDENT , "yes" );
-            t.setOutputProperty( OutputKeys.CDATA_SECTION_ELEMENTS , "yes" );
+        if(t != null){
+            t.setOutputProperty(OutputKeys.ENCODING, "utf-8");
+            t.setOutputProperty(OutputKeys.METHOD, "xml");
+            t.setOutputProperty(OutputKeys.INDENT, "yes");
+            t.setOutputProperty(OutputKeys.CDATA_SECTION_ELEMENTS, "yes");
         }
         StringWriter sw = new StringWriter( );
         try {
-            if(t!=null){
-                t.transform( new DOMSource( d ) , new StreamResult( sw ) );
+            if(t != null){
+                t.transform(new DOMSource(d) , new StreamResult(sw));
             }
-        } catch ( TransformerException e ) {
+        } catch (TransformerException e) {
             LogUtil.e(TAG,"export() transform Exception = " + e);
-            e.printStackTrace( );
+            e.printStackTrace();
         }
 
         LogUtil.i(TAG,"export() path = " + mExportDir);
@@ -144,7 +140,7 @@ public class DbToXmlManager {
             fos.close();
         }catch(Exception e){
             LogUtil.e(TAG,"backup() write Exception = " + e);
-            e.printStackTrace( );
+            e.printStackTrace();
         }
 
         return file.length();

@@ -2,16 +2,13 @@ package com.miniapp.account.db;
 
 import android.content.ContentValues;
 import android.content.Context;
-import android.widget.TextView;
-
-import com.miniapp.account.LogUtil;
-import com.miniapp.account.activity.AccountConstants;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserFactory;
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.ArrayList;
 
+import com.miniapp.account.LogUtil;
 /**
  * Created by zl on 20-12-3.
  */
