@@ -46,7 +46,7 @@ public class AccountService extends Service {
         syncUserNameList();
     }
 
-    private void syncUserNameList() {
+    public void syncUserNameList() {
         updateDbData();
         CategoryUtil categoryUtil = CategoryUtil.getInstance(mAccountService);
         ArrayList<String> categoryList = categoryUtil.getCategoryUserNameList();

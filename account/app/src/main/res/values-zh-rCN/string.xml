@@ -13,11 +13,13 @@
     <string name="dialog_logout_msg">你确定要退出吗?</string>
     <string name="dialog_delete_all_msg">你确定要删除所有数据吗?</string>
     <string name="dialog_add_category">你需要添加一个新类型吗?</string>
-    <string name="dialog_set_limit_money">设置每月额度?</string>
+    <string name="dialog_set_limit_money">设置每月额度</string>
     <string name="dialog_button_yes">是的</string>
     <string name="dialog_button_add">添加</string>
     <string name="dialog_button_set">设置</string>
     <string name="dialog_button_no">手误</string>
+    <string name="dialog_button_update">更新</string>
+    <string name="dialog_update_category">请更新信息</string>
 
     <!--Account Db-->
     <string name="db_username">姓名</string>
@@ -32,6 +34,7 @@
     <string name="menu_import">导入</string>
     <string name="menu_share">分享</string>
     <string name="menu_manage">管理</string>
+    <string name="menu_visible">显示</string>
 
     <!--Button-->
     <string name="btn_query">查询</string>
@@ -46,6 +49,7 @@
     <string name="toast_login_error">账号或密码错误.</string>
     <string name="toast_add_category_first">请先添加用户类型.</string>
     <string name="toast_delete_db_first">请首先删除账单该用户的全部数据.</string>
+    <string name="toast_input_is_null">输入为空.</string>
 
 
     <!--Common-->

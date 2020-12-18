@@ -17,6 +17,8 @@ import com.miniapp.account.LogUtil;
 import com.miniapp.account.R;
 import com.miniapp.account.activity.AccountConstants;
 import com.miniapp.account.activity.AccountCursorAdapter;
+import com.miniapp.account.activity.LoginUtil;
+import com.miniapp.account.activity.Util;
 import com.miniapp.account.db.AccountItemDb;
 import com.miniapp.account.service.AccountService;
 
@@ -104,6 +106,7 @@ public class AccountFiltrateActivity extends BaseActivity {
                 mBtnQuery.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        if(Util.isFastDoubleClick()) return;
                         boolean isNotContain = false;
                         String username = mNameSpinner.getSelectedItem().toString();
                         String date = mDateSpinner.getSelectedItem().toString();
@@ -143,7 +146,12 @@ public class AccountFiltrateActivity extends BaseActivity {
                 AccountCursorAdapter mAdapter = new AccountCursorAdapter(this, R.layout.row_account, mCursor, from,
                         to, null);
                 mContentsList.setAdapter(mAdapter);
-                mSumView.setText(String.format("%.2f", databaseHelper.getTotalMoneyForCursor(mCursor)));
+
+                int totalMoney = LoginUtil.getInstance(mContext).getLimitMoney();
+                double usedMoney = databaseHelper.getTotalMoneyForCursor(mCursor);
+                String showRes = "Used: " + String.format("%.2f", usedMoney)
+                        + "\nRemain: " + String.format("%.2f", (totalMoney- usedMoney));
+                mSumView.setText(showRes);
             }
         }catch (Exception e) {
             LogUtil.e(TAG, "cursor == null" + (mCursor == null));

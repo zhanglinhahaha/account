@@ -18,6 +18,8 @@
     <string name="dialog_button_add">Add</string>
     <string name="dialog_button_set">Set</string>
     <string name="dialog_button_no">No</string>
+    <string name="dialog_button_update">Update</string>
+    <string name="dialog_update_category">Please update the information</string>
 
     <!--Account Db-->
     <string name="db_username">Username</string>
@@ -32,6 +34,7 @@
     <string name="menu_import">Import</string>
     <string name="menu_share">Share</string>
     <string name="menu_manage">Manage</string>
+    <string name="menu_visible">Visible</string>
 
     <!--Button-->
     <string name="btn_query">Query</string>
@@ -46,6 +49,7 @@
     <string name="toast_login_error">account or password is error.</string>
     <string name="toast_add_category_first">Please add a category first.</string>
     <string name="toast_delete_db_first">Please delete the data in account first.</string>
+    <string name="toast_input_is_null">Null input.</string>
 
     <!--Common-->
     <string name="not_contain">not</string>

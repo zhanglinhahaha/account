@@ -152,6 +152,7 @@ public class AccountMainActivity extends BaseActivity {
                     @Override
                     public void run() {
                         makeContents();
+                        mAccountService.syncUserNameList();
                         swipeRefresh.setRefreshing(false);
                     }
                 });
@@ -302,6 +303,11 @@ public class AccountMainActivity extends BaseActivity {
                     break;
                 case R.id.nav_category:
                     intent1.setClassName(AccountConstants.ACCOUNT_PACKAGE, AccountConstants.ACTIVITY_ACCOUNT_CATEGORY);
+                    intent1.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    mContext.startActivity(intent1);
+                    break;
+                case R.id.nav_storage:
+                    intent1.setClassName(AccountConstants.ACCOUNT_PACKAGE, AccountConstants.ACTIVITY_ACCOUNT_DEPOSIT);
                     intent1.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     mContext.startActivity(intent1);
                 default:break;

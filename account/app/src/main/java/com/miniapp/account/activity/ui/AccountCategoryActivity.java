@@ -72,10 +72,10 @@ public class AccountCategoryActivity extends BaseActivity {
         setSupportActionBar(mToolbar);
         ActionBar actionBar = getSupportActionBar();
         if(actionBar != null) actionBar.setTitle(R.string.nav_menu_category);
-        makeContent(isDeleteStatus);
+        makeContent();
     }
 
-    private void makeContent(boolean isDeleteStatus) {
+    private void makeContent() {
         int spanCount = (isDeleteStatus) ? 1 : 2;
         mGridLayoutManager = new GridLayoutManager(mContext, spanCount);
         mRecyclerView.setLayoutManager(mGridLayoutManager);
@@ -96,7 +96,7 @@ public class AccountCategoryActivity extends BaseActivity {
         LogUtil.d(TAG, "onOptionsItemSelected called: " + item.toString());
         if(item.getItemId() == R.id.manage) {
             isDeleteStatus = !isDeleteStatus;
-            makeContent(isDeleteStatus);
+            makeContent();
         }
         return true;
     }
@@ -105,7 +105,7 @@ public class AccountCategoryActivity extends BaseActivity {
     public void onBackPressed() {
         if(isDeleteStatus) {
             isDeleteStatus = false;
-            makeContent(false);
+            makeContent();
         }else{
             super.onBackPressed();
         }
@@ -124,7 +124,7 @@ public class AccountCategoryActivity extends BaseActivity {
                         Toast.makeText(mContext, R.string.toast_delete_db_first, Toast.LENGTH_SHORT).show();
                     }else {
                         categoryUtil.deleteUserCate(categoryName);
-                        makeContent(isDeleteStatus);
+                        makeContent();
                     }
                 }else if(v.getId() == R.id.category_image) {
                     openAlbum();
