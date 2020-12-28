@@ -2,6 +2,7 @@
     <string name="app_name">Account</string>
 
     <!--nav menu-->
+    <string name="nav_menu_home">Home</string>
     <string name="nav_menu_logout">Logout</string>
     <string name="nav_menu_delete">DeleteAll</string>
     <string name="nav_menu_query">Query</string>

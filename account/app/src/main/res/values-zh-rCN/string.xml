@@ -2,6 +2,7 @@
     <string name="app_name">迷你账本</string>
 
     <!--nav menu-->
+    <string name="nav_menu_home">主页</string>
     <string name="nav_menu_logout">退出</string>
     <string name="nav_menu_delete">清空</string>
     <string name="nav_menu_query">查询</string>

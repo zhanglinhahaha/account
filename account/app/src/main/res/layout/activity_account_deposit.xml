@@ -38,4 +38,14 @@
         android:layout_gravity="center">
     </Button>
 
+    <TextView
+        android:id="@+id/storageSum"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/red"
+        android:visibility="gone"
+        android:textSize="22sp"
+        android:textAlignment="center">
+    </TextView>
+
 </LinearLayout>

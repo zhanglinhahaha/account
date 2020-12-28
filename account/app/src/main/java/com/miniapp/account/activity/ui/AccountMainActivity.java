@@ -94,7 +94,7 @@ public class AccountMainActivity extends BaseActivity {
         }
 
         mNavigationView.setItemIconTintList(null);
-        mNavigationView.setCheckedItem(R.id.nav_call);//set selected status
+        mNavigationView.setCheckedItem(R.id.nav_home);//set selected status
         mNavigationView.setNavigationItemSelectedListener(mNavigationClickListener);
 
         //set onClickListener with user pic

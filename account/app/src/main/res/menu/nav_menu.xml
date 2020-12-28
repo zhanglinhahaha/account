@@ -2,16 +2,16 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/nav_call"
-            android:icon="@drawable/phone"
-            android:title="Call"/>
+            android:id="@+id/nav_home"
+            android:icon="@drawable/home"
+            android:title="@string/nav_menu_home"/>
         <item
             android:id="@+id/nav_category"
             android:icon="@drawable/category"
             android:title="@string/nav_menu_category"/>
         <item
             android:id="@+id/nav_storage"
-            android:icon="@drawable/location"
+            android:icon="@drawable/money"
             android:title="@string/nav_menu_storage"/>
         <item
             android:id="@+id/nav_query"

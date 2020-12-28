@@ -34,6 +34,8 @@ public class AccountDepositActivity extends BaseActivity {
     private Button mBtnAdd = null;
     private DepositUtil depositUtil = null;
     private ArrayList<DepositItem> depositItemArrayList = new ArrayList<>();
+    private float mDepositSum = 0;
+    private TextView mShowDepositSum = null;
 
 
     @Override
@@ -44,6 +46,7 @@ public class AccountDepositActivity extends BaseActivity {
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         mListView = (ListView) findViewById(R.id.itemList);
         mBtnAdd = (Button) findViewById(R.id.item_add);
+        mShowDepositSum = (TextView) findViewById(R.id.storageSum);
         depositUtil = DepositUtil.getInstance(this);
         mContext = this;
     }
@@ -81,6 +84,12 @@ public class AccountDepositActivity extends BaseActivity {
         }else {
             mBtnAdd.setVisibility(View.GONE);
         }
+        if(isVisibleStatus) {
+            mShowDepositSum.setVisibility(View.VISIBLE);
+            mShowDepositSum.setText("Total: " + String.format("%.2f", mDepositSum));
+        }else {
+            mShowDepositSum.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -106,9 +115,11 @@ public class AccountDepositActivity extends BaseActivity {
         LogUtil.v(TAG, "onOptionsItemSelected called: " + item.toString());
         if(item.getItemId() == R.id.visibleItem) {
             if(Util.onClickButton5Times()) {
-                isVisibleStatus = !isVisibleStatus;
-                makeContent();
+                isVisibleStatus = true;
+            }else {
+                isVisibleStatus = false;
             }
+            makeContent();
         }
         return true;
     }
@@ -179,6 +190,7 @@ public class AccountDepositActivity extends BaseActivity {
             if(item != null) {
                 viewholder.depositName.setText(item.getName());
                 viewholder.depositShow.setText(String.valueOf(item.getDeposit()));
+                mDepositSum += item.getDeposit();
                 if(isEditStatus) {
                     viewholder.depositShow.setVisibility(View.GONE);
                     viewholder.depositBtnDe.setVisibility(View.VISIBLE);
