@@ -76,6 +76,7 @@ public class AccountDepositActivity extends BaseActivity {
     private void makeContent() {
         LogUtil.v(TAG, "makeContent, isEditStatus: " + isEditStatus + ", isVisibleStatus: " + isVisibleStatus);
         depositItemArrayList = depositUtil.getDepositList();
+
         DepositAdapter adapter = new DepositAdapter(mContext, R.layout.deposit_item, depositItemArrayList);
         mListView.setAdapter(adapter);
         if(isEditStatus) {
@@ -86,6 +87,10 @@ public class AccountDepositActivity extends BaseActivity {
         }
         if(isVisibleStatus) {
             mShowDepositSum.setVisibility(View.VISIBLE);
+            mDepositSum = 0;
+            for(DepositItem item : depositItemArrayList) {
+                mDepositSum += item.getDeposit();
+            }
             mShowDepositSum.setText("Total: " + String.format("%.2f", mDepositSum));
         }else {
             mShowDepositSum.setVisibility(View.GONE);
@@ -190,7 +195,6 @@ public class AccountDepositActivity extends BaseActivity {
             if(item != null) {
                 viewholder.depositName.setText(item.getName());
                 viewholder.depositShow.setText(String.valueOf(item.getDeposit()));
-                mDepositSum += item.getDeposit();
                 if(isEditStatus) {
                     viewholder.depositShow.setVisibility(View.GONE);
                     viewholder.depositBtnDe.setVisibility(View.VISIBLE);

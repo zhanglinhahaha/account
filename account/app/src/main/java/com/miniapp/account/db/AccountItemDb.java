@@ -64,12 +64,14 @@ public class AccountItemDb extends SQLiteOpenHelper {
     public void insert(ContentValues values) {
         database.insert(TABLE_ACCOUNT, null, values);
         LogUtil.d(TAG, "insert values:");
+        AccountService.getService(mContext).updateDbData();
     }
 
     public void update(ContentValues values, Integer id){
         database.update(TABLE_ACCOUNT, values, ID + " = ?",
                 new String[]{""+id});
         LogUtil.d(TAG, "update: " + id);
+        AccountService.getService(mContext).updateDbData();
     }
 
     public void delete(Integer id){
@@ -129,7 +131,11 @@ public class AccountItemDb extends SQLiteOpenHelper {
 
     public double getTotalMoneyForCursor(Cursor cursor) {
         double res = 0;
-        if(cursor == null) cursor = getCursor();
+        boolean flag = false;
+        if(cursor == null) {
+            flag = true;
+            cursor = getCursor();
+        }
         try {
             if(cursor.moveToFirst()) {
                 do {
@@ -139,6 +145,10 @@ public class AccountItemDb extends SQLiteOpenHelper {
         } catch (Exception e) {
             LogUtil.e(TAG, "cursor " + e);
             e.printStackTrace();
+        }finally {
+            if(flag && cursor != null) {
+                cursor.close();
+            }
         }
         return res;
     }

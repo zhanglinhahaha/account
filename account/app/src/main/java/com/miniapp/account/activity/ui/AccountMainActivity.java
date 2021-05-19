@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AbsListView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -112,6 +113,18 @@ public class AccountMainActivity extends BaseActivity {
             }
         });
 
+        //solve the issue of "refresh when the listview doesn't reach the top".
+        mContentsList.setOnScrollListener(new AbsListView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
+
+            }
+            @Override
+            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+                swipeRefresh.setEnabled(firstVisibleItem == 0);
+            }
+        });
+
         makeContents();
     }
 
@@ -129,14 +142,14 @@ public class AccountMainActivity extends BaseActivity {
                 mAdapter = new AccountCursorAdapter(this, R.layout.row_account, cursor, from,
                         to, mListVewItemClickListener);
                 mContentsList.setAdapter(mAdapter);
-                TextView textView = (TextView) findViewById(R.id.querySum);
-                int totalMoney = LoginUtil.getInstance(mContext).getLimitMoney();
-                double usedMoney = databaseHelper.getTotalMoneyForCursor(null);
-
-                String showRes = "Used: " + String.format("%.2f", usedMoney)
-                        + "\nRemain: " + String.format("%.2f", (totalMoney- usedMoney));
-                textView.setText(showRes);
             }
+            TextView textView = (TextView) findViewById(R.id.querySum);
+            int totalMoney = LoginUtil.getInstance(mContext).getLimitMoney();
+            double usedMoney = AccountService.getService(mContext).getTotalMoney();
+
+            String showRes = "Used: " + String.format("%.2f", usedMoney)
+                    + "\nRemain: " + String.format("%.2f", (totalMoney- usedMoney));
+            textView.setText(showRes);
         }catch (Exception e) {
             LogUtil.e(TAG, "cursor == null" + (cursor == null));
             e.printStackTrace();
@@ -145,13 +158,13 @@ public class AccountMainActivity extends BaseActivity {
 
     private void refresh() {
         LogUtil.v(TAG,"refresh()");
+        makeContents();
         new Thread(new Runnable() {
             @Override
             public void run() {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        makeContents();
                         mAccountService.syncUserNameList();
                         swipeRefresh.setRefreshing(false);
                     }

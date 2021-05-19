@@ -65,6 +65,8 @@ public class XmlToDbManager {
 
                         if(tag.equals("item")) {
                             item_tag = true;
+                            mDbList.clear();
+                            mCv.clear();
                         }
                         break;
                     case XmlPullParser.TEXT:
