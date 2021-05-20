@@ -8,6 +8,7 @@
     <string name="nav_menu_query">查询</string>
     <string name="nav_menu_storage">存款</string>
     <string name="nav_menu_category">类型</string>
+    <string name="nav_menu_analysis">分析</string>
 
     <!--Popup string-->
     <string name="dialog_warning_title">警告</string>
@@ -36,6 +37,7 @@
     <string name="menu_share">分享</string>
     <string name="menu_manage">管理</string>
     <string name="menu_visible">显示</string>
+    <string name="menu_importFile">导入文件</string>
 
     <!--Button-->
     <string name="btn_query">查询</string>

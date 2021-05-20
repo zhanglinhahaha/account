@@ -21,6 +21,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".extension.ui.AccountAnalysisActivity" />
         <activity android:name=".activity.ui.AccountDepositActivity" />
         <activity android:name=".activity.ui.AccountCategoryActivity" />
         <activity android:name=".activity.ui.AccountFiltrateActivity" />
@@ -34,7 +35,7 @@
             android:name=".activity.ui.AccountDialog"
             android:launchMode="singleTop"
             android:theme="@style/AccountDialog" />
-        <activity android:name=".activity.ui.BaseActivity" />
+        <activity android:name=".BaseActivity" />
 
         <receiver android:name=".broadcast.AccountBroadcastReceiver" />
 

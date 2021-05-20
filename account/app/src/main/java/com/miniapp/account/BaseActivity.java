@@ -1,4 +1,4 @@
-package com.miniapp.account.activity.ui;
+package com.miniapp.account;
 
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;

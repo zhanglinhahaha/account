@@ -16,6 +16,7 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.widget.Toolbar;
 import java.util.ArrayList;
 
+import com.miniapp.account.BaseActivity;
 import com.miniapp.account.LogUtil;
 import com.miniapp.account.R;
 import com.miniapp.account.activity.AccountConstants;

@@ -9,6 +9,8 @@ import java.io.FileInputStream;
 import java.util.ArrayList;
 
 import com.miniapp.account.LogUtil;
+import com.miniapp.account.activity.AccountConstants;
+
 /**
  * Created by zl on 20-12-3.
  */
@@ -121,7 +123,7 @@ public class XmlToDbManager {
     private void deleteBackupFile() {
         try {
             File file = new File(mRestoreFilePath);
-            if(file.exists()) {
+            if(file.exists() && mRestoreFilePath.equals(AccountConstants.EXTERNAL_FILE_PATH)) {
                 file.delete();
             }
         }catch(Exception e){

@@ -10,6 +10,7 @@ public class AccountConstants {
     public static final String ACTIVITY_ACCOUNT_DIALOG = "com.miniapp.account.activity.ui.AccountDialog";
     public static final String ACTIVITY_ACCOUNT_CATEGORY = "com.miniapp.account.activity.ui.AccountCategoryActivity";
     public static final String ACTIVITY_ACCOUNT_DEPOSIT = "com.miniapp.account.activity.ui.AccountDepositActivity";
+    public static final String ACTIVITY_ACCOUNT_ANALYSIS = "com.miniapp.account.extension.ui.AccountAnalysisActivity";
 
     /**
      * 增加还是更新, 增加 type 默认为 0

@@ -12,6 +12,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.miniapp.account.ActivityCollector;
+import com.miniapp.account.BaseActivity;
 import com.miniapp.account.LogUtil;
 import com.miniapp.account.R;
 import com.miniapp.account.activity.AccountConstants;

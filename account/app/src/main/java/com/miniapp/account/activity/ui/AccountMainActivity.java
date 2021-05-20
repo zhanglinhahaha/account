@@ -1,6 +1,7 @@
 package com.miniapp.account.activity.ui;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -16,6 +17,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.FileProvider;
@@ -27,7 +29,9 @@ import com.google.android.material.navigation.NavigationView;
 import java.io.File;
 import de.hdodenhof.circleimageview.CircleImageView;
 
+import com.miniapp.account.BaseActivity;
 import com.miniapp.account.BuildConfig;
+import com.miniapp.account.FileUtil;
 import com.miniapp.account.LogUtil;
 import com.miniapp.account.R;
 import com.miniapp.account.activity.AccountConstants;
@@ -37,6 +41,7 @@ import com.miniapp.account.activity.Util;
 import com.miniapp.account.db.AccountItemDb;
 import com.miniapp.account.db.DbToXmlManager;
 import com.miniapp.account.db.XmlToDbManager;
+import com.miniapp.account.extension.ExtensionUtil;
 import com.miniapp.account.service.AccountService;
 
 
@@ -204,6 +209,25 @@ public class AccountMainActivity extends BaseActivity {
         return true;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        String path = null;
+        Uri uri = null;
+        if (resultCode == Activity.RESULT_OK) {
+            uri = data.getData();
+            path = FileUtil.getPath(mContext, uri);
+        }
+        if(path != null && ExtensionUtil.openFile(path)) {
+            XmlToDbManager importFile = new XmlToDbManager(mContext);
+            int num = importFile.start(path);
+            Toast.makeText(mContext, String.format(getString(R.string.toast_import_num), String.valueOf(num)), Toast.LENGTH_SHORT).show();
+            refresh();
+        }else {
+            Toast.makeText(mContext, "file is wrong", Toast.LENGTH_SHORT).show();
+        }
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         String path = AccountConstants.EXTERNAL_FILE_PATH;
@@ -221,10 +245,10 @@ public class AccountMainActivity extends BaseActivity {
                 }
                 break;
             case R.id.importDb:
-                XmlToDbManager importFile = new XmlToDbManager(mContext);
-                int num = importFile.start(path);
-                Toast.makeText(mContext, String.format(getString(R.string.toast_import_num), String.valueOf(num)), Toast.LENGTH_SHORT).show();
-                refresh();
+                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                intent.setType("*/*");
+                intent.addCategory(Intent.CATEGORY_OPENABLE);
+                startActivityForResult(intent, 1);
                 break;
             case R.id.share:
                 shareFiles(path);
@@ -316,6 +340,11 @@ public class AccountMainActivity extends BaseActivity {
                     break;
                 case R.id.nav_category:
                     intent1.setClassName(AccountConstants.ACCOUNT_PACKAGE, AccountConstants.ACTIVITY_ACCOUNT_CATEGORY);
+                    intent1.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    mContext.startActivity(intent1);
+                    break;
+                case R.id.nav_analysis:
+                    intent1.setClassName(AccountConstants.ACCOUNT_PACKAGE, AccountConstants.ACTIVITY_ACCOUNT_ANALYSIS);
                     intent1.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     mContext.startActivity(intent1);
                     break;

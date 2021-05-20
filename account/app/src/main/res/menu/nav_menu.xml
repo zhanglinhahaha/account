@@ -18,6 +18,10 @@
             android:icon="@drawable/query"
             android:title="@string/nav_menu_query"/>
         <item
+            android:id="@+id/nav_analysis"
+            android:icon="@drawable/done"
+            android:title="@string/nav_menu_analysis"/>
+        <item
             android:id="@+id/nav_delete"
             android:icon="@drawable/delete"
             android:title="@string/nav_menu_delete"/>

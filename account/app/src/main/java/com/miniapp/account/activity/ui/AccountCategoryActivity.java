@@ -22,6 +22,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import de.hdodenhof.circleimageview.CircleImageView;
 
+import com.miniapp.account.BaseActivity;
 import com.miniapp.account.LogUtil;
 import com.miniapp.account.R;
 import com.miniapp.account.activity.AccountCategoryAdapter;

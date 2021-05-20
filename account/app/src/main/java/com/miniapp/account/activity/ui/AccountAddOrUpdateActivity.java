@@ -17,10 +17,10 @@ import android.widget.EditText;
 import android.widget.ListPopupWindow;
 import android.widget.Toast;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 
+import com.miniapp.account.BaseActivity;
 import com.miniapp.account.LogUtil;
 import com.miniapp.account.R;
 import com.miniapp.account.activity.AccountConstants;

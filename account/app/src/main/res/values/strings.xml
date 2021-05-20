@@ -8,6 +8,7 @@
     <string name="nav_menu_query">Query</string>
     <string name="nav_menu_storage">Storage</string>
     <string name="nav_menu_category">Category</string>
+    <string name="nav_menu_analysis">Analysis</string>
 
     <!--Popup string-->
     <string name="dialog_warning_title">Warning</string>
@@ -36,6 +37,7 @@
     <string name="menu_share">Share</string>
     <string name="menu_manage">Manage</string>
     <string name="menu_visible">Visible</string>
+    <string name="menu_importFile">importFile</string>
 
     <!--Button-->
     <string name="btn_query">Query</string>

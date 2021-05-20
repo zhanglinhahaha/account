@@ -13,6 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import java.util.ArrayList;
 
+import com.miniapp.account.BaseActivity;
 import com.miniapp.account.LogUtil;
 import com.miniapp.account.R;
 import com.miniapp.account.activity.AccountConstants;
