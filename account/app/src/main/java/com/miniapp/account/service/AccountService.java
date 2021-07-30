@@ -67,7 +67,6 @@ public class AccountService extends Service {
     private void initIntentFilter() {
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(AccountConstants.FORCE_OFFLINE);
-        intentFilter.addAction("zltext");
         registerReceiver(mReceiver, intentFilter);
     }
 

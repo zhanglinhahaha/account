@@ -11,11 +11,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.widget.Toolbar;
-
+import java.util.ArrayList;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.Legend;
@@ -33,7 +32,6 @@ import com.miniapp.account.BaseActivity;
 import com.miniapp.account.FileUtil;
 import com.miniapp.account.R;
 import com.miniapp.account.extension.ExtensionUtil;
-import java.util.ArrayList;
 
 
 public class AccountAnalysisActivity extends BaseActivity {
@@ -57,6 +55,12 @@ public class AccountAnalysisActivity extends BaseActivity {
         setSupportActionBar((Toolbar)findViewById(R.id.toolbar));
         ActionBar actionBar = getSupportActionBar();
         if(actionBar != null) actionBar.setTitle(R.string.nav_menu_analysis);
+        initDataBasedSql();
+    }
+
+    private void initDataBasedSql() {
+        ExtensionUtil.openSql(mContext);
+        DrawChart();
     }
 
     @Override
@@ -95,6 +99,7 @@ public class AccountAnalysisActivity extends BaseActivity {
             mTextView.setText(null);
             mPieChart.clear();
             mLineChart.clear();
+            initDataBasedSql();
         }
      }
 

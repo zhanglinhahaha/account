@@ -1,13 +1,12 @@
 package com.miniapp.account.extension;
 
-import android.content.ContentValues;
-
+import android.content.Context;
+import android.database.Cursor;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserFactory;
 import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
-
 import com.miniapp.account.LogUtil;
 import com.miniapp.account.db.AccountItemDb;
 
@@ -25,6 +24,38 @@ public class ExtensionUtil {
     }
     public static HashMap<String, Double> getDateCost() {
         return mDateCost;
+    }
+
+    public static void openSql(Context context) {
+        LogUtil.v(TAG, "openSql()");
+        mUserCost = new HashMap<>();
+        mDateCost = new HashMap<>();
+        mDateList = new ArrayList<>();
+        Cursor cursor = null;
+        try {
+            cursor = AccountItemDb.getInstance(context).getCursor();
+            if(cursor.moveToFirst()) {
+                do {
+                    double price =  cursor.getDouble(cursor.getColumnIndex(AccountItemDb.ACCOUNT_ITEM_PRICE));
+                    String username = cursor.getString(cursor.getColumnIndex(AccountItemDb.ACCOUNT_ITEM_USERNAME));
+                    String date = cursor.getString(cursor.getColumnIndex(AccountItemDb.ACCOUNT_ITEM_DATE));
+
+                    mUserCost.put(username, price + (mUserCost.containsKey(username) ? mUserCost.get(username) : 0));
+                    mDateCost.put(date, price + (mDateCost.containsKey(date) ? mDateCost.get(date) : 0));
+                    if(!mDateList.contains(date)) {
+                        mDateList.add(date);
+                    }
+                }while (cursor.moveToNext());
+            }
+        } catch (Exception e) {
+            LogUtil.e(TAG, "cursor " + e);
+            e.printStackTrace();
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+                cursor = null;
+            }
+        }
     }
 
     public static boolean openFile(String filename) {
