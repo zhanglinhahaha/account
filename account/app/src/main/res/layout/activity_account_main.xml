@@ -63,7 +63,8 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|end"
             android:layout_margin="16dp"
-            android:src="@drawable/add"
+            android:src="@drawable/account_add"
+            app:maxImageSize="68dp"
             app:backgroundTint="#fff"
             app:elevation="8dp"
             />

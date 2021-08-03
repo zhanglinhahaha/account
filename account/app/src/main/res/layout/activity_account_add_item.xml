@@ -101,6 +101,8 @@
     <Button
         android:id="@+id/db_add"
         android:layout_width="match_parent"
+        android:textColor="@color/white"
+        android:background="@drawable/button_drawable"
         android:layout_height="60dp"
         android:text="@string/db_add"
         android:textAllCaps="false"/>

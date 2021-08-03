@@ -33,6 +33,8 @@
         android:id="@+id/item_add"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textColor="@color/white"
+        android:background="@drawable/button_drawable"
         android:text="@string/db_add"
         android:visibility="gone"
         android:layout_gravity="center">

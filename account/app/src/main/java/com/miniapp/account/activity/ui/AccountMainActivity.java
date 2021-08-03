@@ -96,7 +96,7 @@ public class AccountMainActivity extends BaseActivity {
         ActionBar actionBar = getSupportActionBar();
         if(actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
-            actionBar.setHomeAsUpIndicator(R.drawable.menu_32px);
+            actionBar.setHomeAsUpIndicator(R.drawable.account_menu);
         }
 
         mNavigationView.setItemIconTintList(null);

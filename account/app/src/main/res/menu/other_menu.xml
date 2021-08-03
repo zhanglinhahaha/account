@@ -4,21 +4,21 @@
 
     <item
         android:id="@+id/manage"
-        android:icon="@drawable/settings"
+        android:icon="@drawable/account_settings_custom"
         android:title="@string/menu_manage"
         app:showAsAction="always"
         android:visible="false"/>
 
     <item
         android:id="@+id/visibleItem"
-        android:icon="@drawable/visible"
+        android:icon="@drawable/ic_action_eye_custom"
         android:title="@string/menu_manage"
         app:showAsAction="always"
         android:visible="false"/>
 
     <item
         android:id="@+id/importFile"
-        android:icon="@drawable/add"
+        android:icon="@drawable/account_add_dark"
         android:title="@string/menu_importFile"
         app:showAsAction="always"
         android:visible="false"/>

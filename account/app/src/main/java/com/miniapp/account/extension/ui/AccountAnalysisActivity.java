@@ -112,8 +112,10 @@ public class AccountAnalysisActivity extends BaseActivity {
         for(String key : ExtensionUtil.getUserCost().keySet()) {
             mPieEntry.add(new PieEntry(Float.valueOf(ExtensionUtil.getUserCost().get(key).toString()), key));
         }
-        DrawPieChart();
-        DrawLineChart();
+        if(mPieEntry.size() != 0 && mLineEntry.size() != 0) {
+            DrawPieChart();
+            DrawLineChart();
+        }
     }
 
     @Override

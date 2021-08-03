@@ -31,6 +31,12 @@
 
             <Button
                 android:id="@+id/btn_delete"
+                android:layout_marginTop="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_height="40dp"
+                android:layout_width="40dp"
+                android:textColor="@color/white"
+                android:background="@drawable/button_drawable"
                 android:text="@string/btn_delete">
             </Button>
         </TableRow>
