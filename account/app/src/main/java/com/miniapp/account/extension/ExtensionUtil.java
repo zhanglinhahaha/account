@@ -8,7 +8,7 @@ import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import com.miniapp.account.LogUtil;
-import com.miniapp.account.db.AccountItemDb;
+import com.miniapp.account.db.AccountDataDB;
 
 public class ExtensionUtil {
     private static final String TAG = "ExtensionUtil";
@@ -33,12 +33,13 @@ public class ExtensionUtil {
         mDateList = new ArrayList<>();
         Cursor cursor = null;
         try {
-            cursor = AccountItemDb.getInstance(context).getCursor();
+            cursor = context.getContentResolver().query(AccountDataDB.AccountGeneral.CONTENT_URI, null, null,
+                    null, AccountDataDB.ACCOUNT_ITEM_DATE_ASC);
             if(cursor.moveToFirst()) {
                 do {
-                    double price =  cursor.getDouble(cursor.getColumnIndex(AccountItemDb.ACCOUNT_ITEM_PRICE));
-                    String username = cursor.getString(cursor.getColumnIndex(AccountItemDb.ACCOUNT_ITEM_USERNAME));
-                    String date = cursor.getString(cursor.getColumnIndex(AccountItemDb.ACCOUNT_ITEM_DATE));
+                    double price =  cursor.getDouble(cursor.getColumnIndex(AccountDataDB.AccountGeneral.ACCOUNT_ITEM_PRICE));
+                    String username = cursor.getString(cursor.getColumnIndex(AccountDataDB.AccountGeneral.ACCOUNT_ITEM_USERNAME));
+                    String date = cursor.getString(cursor.getColumnIndex(AccountDataDB.AccountGeneral.ACCOUNT_ITEM_DATE));
 
                     mUserCost.put(username, price + (mUserCost.containsKey(username) ? mUserCost.get(username) : 0));
                     mDateCost.put(date, price + (mDateCost.containsKey(date) ? mDateCost.get(date) : 0));
@@ -98,9 +99,9 @@ public class ExtensionUtil {
                     case XmlPullParser.END_TAG:
                         tag = parser.getName();
                         if(tag.equals("item")) {
-                            String username = xmlKeyValue.get(AccountItemDb.ACCOUNT_ITEM_USERNAME);
-                            Double price = Double.valueOf(xmlKeyValue.get(AccountItemDb.ACCOUNT_ITEM_PRICE));
-                            String date = xmlKeyValue.get(AccountItemDb.ACCOUNT_ITEM_DATE);
+                            String username = xmlKeyValue.get(AccountDataDB.AccountGeneral.ACCOUNT_ITEM_USERNAME);
+                            Double price = Double.valueOf(xmlKeyValue.get(AccountDataDB.AccountGeneral.ACCOUNT_ITEM_PRICE));
+                            String date = xmlKeyValue.get(AccountDataDB.AccountGeneral.ACCOUNT_ITEM_DATE);
                             LogUtil.e(username + price + date);
                             mUserCost.put(username, price + (mUserCost.containsKey(username) ? mUserCost.get(username) : 0));
                             mDateCost.put(date, price + (mDateCost.containsKey(date) ? mDateCost.get(date) : 0));

@@ -118,7 +118,7 @@ public class AccountCategoryActivity extends BaseActivity {
             if(Util.isFastDoubleClick()) return;
             int mChooseId = Integer.parseInt(v.getTag().toString());
             categoryName = categoryUtil.getUserCateList().get(mChooseId).getName();
-            LogUtil.d(TAG, "onClick: " + mChooseId + ", categoryName: " + categoryName + ", isDeleteStatus" + isDeleteStatus);
+            LogUtil.d(TAG, "onClick: " + mChooseId + ", categoryName: " + categoryName + ", isDeleteStatus: " + isDeleteStatus);
             if(isDeleteStatus) {
                 if(v.getId() == R.id.category_delete) {
                     if(AccountService.getService(mContext).getUserNameList().contains(categoryName)) {

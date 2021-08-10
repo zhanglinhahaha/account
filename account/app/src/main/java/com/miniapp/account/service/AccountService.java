@@ -4,16 +4,17 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.database.ContentObserver;
 import android.database.Cursor;
+import android.os.Handler;
 import android.os.IBinder;
+import java.util.ArrayList;
 
 import com.miniapp.account.LogUtil;
 import com.miniapp.account.activity.AccountConstants;
 import com.miniapp.account.activity.CategoryUtil;
 import com.miniapp.account.broadcast.AccountBroadcastReceiver;
-import com.miniapp.account.db.AccountItemDb;
-
-import java.util.ArrayList;
+import com.miniapp.account.db.AccountDataDB;
 
 /**
  * Created by zl on 20-11-27.
@@ -32,7 +33,6 @@ public class AccountService extends Service {
         if (mAccountService == null) {
             ctx.startService(new Intent(ctx, AccountService.class));
         }
-        LogUtil.d(TAG,"getService() called end, (AccountService == null)? " + (mAccountService == null));
         return mAccountService;
     }
 
@@ -46,8 +46,9 @@ public class AccountService extends Service {
         syncUserNameList();
     }
 
-    public void syncUserNameList() {
+    private void syncUserNameList() {
         updateDbData();
+        getContentResolver().registerContentObserver(AccountDataDB.AccountGeneral.CONTENT_URI,true, changeObserver);
         CategoryUtil categoryUtil = CategoryUtil.getInstance(mAccountService);
         ArrayList<String> categoryList = categoryUtil.getCategoryUserNameList();
         for(String name : mUserNameList) {
@@ -56,6 +57,15 @@ public class AccountService extends Service {
             }
         }
     }
+
+    private final ContentObserver changeObserver =
+            new ContentObserver(new Handler()) {
+                @Override
+                public void onChange(boolean selfChange) {
+                    LogUtil.d(TAG, "onChange: ");
+                    updateDbData();
+                }
+            };
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
@@ -74,6 +84,7 @@ public class AccountService extends Service {
     public void onDestroy() {
         super.onDestroy();
         LogUtil.d(TAG, "onDestroy: ");
+        getContentResolver().unregisterContentObserver(changeObserver);
         if(mReceiver != null) {
             unregisterReceiver(mReceiver);
             mReceiver = null;
@@ -86,20 +97,21 @@ public class AccountService extends Service {
         return null;
     }
 
-    public void updateDbData() {
+    private void updateDbData() {
         LogUtil.v(TAG, "updateDbData()");
         mUserNameList = new ArrayList<>();
         mDateList = new ArrayList<>();
         mTotalMoney = 0;
         Cursor cursor = null;
         try {
-            cursor = AccountItemDb.getInstance(mAccountService).getCursor();
+            cursor = getContentResolver().query(AccountDataDB.AccountGeneral.CONTENT_URI, null, null,
+                    null, AccountDataDB.ACCOUNT_ITEM_DATE_ASC);
             int num = 0;
             if(cursor.moveToFirst()) {
                 do {
-                    mTotalMoney +=  cursor.getDouble(cursor.getColumnIndex(AccountItemDb.ACCOUNT_ITEM_PRICE));
-                    String username = cursor.getString(cursor.getColumnIndex(AccountItemDb.ACCOUNT_ITEM_USERNAME));
-                    String date = cursor.getString(cursor.getColumnIndex(AccountItemDb.ACCOUNT_ITEM_DATE));
+                    mTotalMoney +=  cursor.getDouble(cursor.getColumnIndex(AccountDataDB.AccountGeneral.ACCOUNT_ITEM_PRICE));
+                    String username = cursor.getString(cursor.getColumnIndex(AccountDataDB.AccountGeneral.ACCOUNT_ITEM_USERNAME));
+                    String date = cursor.getString(cursor.getColumnIndex(AccountDataDB.AccountGeneral.ACCOUNT_ITEM_DATE));
 
                     String month = date.substring(0, date.lastIndexOf("-"));
                     num++;

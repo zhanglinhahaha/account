@@ -9,6 +9,7 @@
     <string name="nav_menu_storage">Storage</string>
     <string name="nav_menu_category">Category</string>
     <string name="nav_menu_analysis">Analysis</string>
+    <string name="nav_menu_private">Private</string>
 
     <!--Popup string-->
     <string name="dialog_warning_title">Warning</string>
@@ -27,7 +28,7 @@
     <string name="db_username">Username</string>
     <string name="db_price">Price</string>
     <string name="db_comment">Comment</string>
-    <string name="db_date">date</string>
+    <string name="db_date">Date</string>
     <string name="db_add">Add</string>
     <string name="db_update">Update</string>
 

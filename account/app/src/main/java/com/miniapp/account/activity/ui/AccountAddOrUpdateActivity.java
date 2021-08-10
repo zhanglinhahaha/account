@@ -3,8 +3,8 @@ package com.miniapp.account.activity.ui;
 import android.app.DatePickerDialog;
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.Intent;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.InputType;
 import android.view.MotionEvent;
@@ -26,7 +26,7 @@ import com.miniapp.account.R;
 import com.miniapp.account.activity.AccountConstants;
 import com.miniapp.account.activity.CategoryUtil;
 import com.miniapp.account.activity.Util;
-import com.miniapp.account.db.AccountItemDb;
+import com.miniapp.account.db.AccountDataDB;
 
 public class AccountAddOrUpdateActivity extends BaseActivity {
     private static final String TAG = "AccountAddItemActivity";
@@ -38,8 +38,8 @@ public class AccountAddOrUpdateActivity extends BaseActivity {
     private EditText mDate = null;
     private Button mAddButton = null;
     private int mAddOrUpdate = 0;
-
-    private AccountItemDb databaseHelper = null;
+    private int mPrivyType = 0;
+    private String mPrivyName = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,7 +53,8 @@ public class AccountAddOrUpdateActivity extends BaseActivity {
         mDate = (EditText) findViewById(R.id.db_date);
         mAddButton = (Button) findViewById(R.id.db_add);
         mAddOrUpdate = getIntent().getIntExtra(AccountConstants.ADD_OR_UPDATE_TYPE, 0);
-        databaseHelper = AccountItemDb.getInstance(mContext);
+        mPrivyType = getIntent().getIntExtra(AccountConstants.PRIVATE_TYPE, 0);
+        mPrivyName = getIntent().getStringExtra(AccountConstants.PRIVATE_USERNAME);
     }
 
     @Override
@@ -70,14 +71,21 @@ public class AccountAddOrUpdateActivity extends BaseActivity {
     }
 
     private void initOnResume() {
+        LogUtil.v(TAG, "initOnResume, mPrivyType: " + mPrivyType + ", mAddOrUpdate: " + mAddOrUpdate);
         if(mAddOrUpdate != 0) makeContent();
 
         mAddButton.setOnClickListener(mClickListener);
         mDate.setOnTouchListener(mTouchListener);
         //don't show keyboard
         mDate.setInputType(InputType.TYPE_NULL);
-        mUsername.setOnTouchListener(mTouchListener);
-        mUsername.setInputType(InputType.TYPE_NULL);
+
+        if(mPrivyName != null) {
+            mUsername.setText(mPrivyName);
+            mUsername.setEnabled(false);
+        }else {
+            mUsername.setOnTouchListener(mTouchListener);
+            mUsername.setInputType(InputType.TYPE_NULL);
+        }
     }
 
     private void makeContent() {
@@ -85,12 +93,16 @@ public class AccountAddOrUpdateActivity extends BaseActivity {
         mAddButton.setText(R.string.db_update);
         Cursor cursor = null;
         try {
-            cursor = databaseHelper.query(mAddOrUpdate);
+            Uri uri = AccountDataDB.AccountGeneral.CONTENT_URI;
+            if(mPrivyType == 1) uri = AccountDataDB.AccountPrivate.CONTENT_URI;
+            cursor = getContentResolver().query(uri, null,
+                    AccountDataDB.AccountGeneral.ID + "=?", new String[] {mAddOrUpdate+""}, null);
             if(cursor.getCount() != 0 ) {
-                String name = cursor.getString(cursor.getColumnIndex(AccountItemDb.ACCOUNT_ITEM_USERNAME));
-                String comment = cursor.getString(cursor.getColumnIndex(AccountItemDb.ACCOUNT_ITEM_COMMENT));
-                String date = cursor.getString(cursor.getColumnIndex(AccountItemDb.ACCOUNT_ITEM_DATE));
-                double price = cursor.getDouble(cursor.getColumnIndex(AccountItemDb.ACCOUNT_ITEM_PRICE));
+                cursor.moveToNext();
+                String name = cursor.getString(cursor.getColumnIndex(AccountDataDB.AccountGeneral.ACCOUNT_ITEM_USERNAME));
+                String comment = cursor.getString(cursor.getColumnIndex(AccountDataDB.AccountGeneral.ACCOUNT_ITEM_COMMENT));
+                String date = cursor.getString(cursor.getColumnIndex(AccountDataDB.AccountGeneral.ACCOUNT_ITEM_DATE));
+                double price = cursor.getDouble(cursor.getColumnIndex(AccountDataDB.AccountGeneral.ACCOUNT_ITEM_PRICE));
                 LogUtil.d(TAG, " date =" + date + " ,name  = " + name + ", comment = " + comment + ", price = " + price);
                 mUsername.setText(name);
                 mPrice.setText(""+price);
@@ -205,20 +217,22 @@ public class AccountAddOrUpdateActivity extends BaseActivity {
             e.printStackTrace();
         }
         ContentValues mContentValues = new ContentValues();
-        mContentValues.put(AccountItemDb.ACCOUNT_ITEM_USERNAME, name);
-        mContentValues.put(AccountItemDb.ACCOUNT_ITEM_PRICE, priceDouble);
-        mContentValues.put(AccountItemDb.ACCOUNT_ITEM_COMMENT, comment);
-        mContentValues.put(AccountItemDb.ACCOUNT_ITEM_DATE, date);
+        mContentValues.put(AccountDataDB.AccountGeneral.ACCOUNT_ITEM_USERNAME, name);
+        mContentValues.put(AccountDataDB.AccountGeneral.ACCOUNT_ITEM_PRICE, priceDouble);
+        mContentValues.put(AccountDataDB.AccountGeneral.ACCOUNT_ITEM_COMMENT, comment);
+        mContentValues.put(AccountDataDB.AccountGeneral.ACCOUNT_ITEM_DATE, date);
         LogUtil.d(TAG, mContentValues.toString());
 
+        Uri uri = AccountDataDB.AccountGeneral.CONTENT_URI;
+        if(mPrivyType == 1) uri = AccountDataDB.AccountPrivate.CONTENT_URI;
+
         if(mAddOrUpdate == 0) {
-            databaseHelper.insert(mContentValues);
+            getContentResolver().insert(uri, mContentValues);
         }else {
-            databaseHelper.update(mContentValues, mAddOrUpdate);
+            getContentResolver().update(uri, mContentValues, AccountDataDB.AccountGeneral.ID + " = ?",
+                    new String[]{""+mAddOrUpdate});
         }
 
-        Intent intent = new Intent(mContext, AccountMainActivity.class);
-        startActivity(intent);
         finish();
     }
 }

@@ -41,6 +41,11 @@
 
         <service android:name=".service.AccountService" />
 
+        <provider android:name="com.miniapp.account.db.AccountDataDBProvider"
+            android:authorities="com.miniapp.account.db.AccountDataDB"
+            android:exported="true">
+        </provider>
+
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="com.miniapp.account.fileprovider"

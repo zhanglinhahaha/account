@@ -38,7 +38,7 @@ import com.miniapp.account.activity.AccountConstants;
 import com.miniapp.account.activity.AccountCursorAdapter;
 import com.miniapp.account.activity.LoginUtil;
 import com.miniapp.account.activity.Util;
-import com.miniapp.account.db.AccountItemDb;
+import com.miniapp.account.db.AccountDataDB;
 import com.miniapp.account.db.DbToXmlManager;
 import com.miniapp.account.db.XmlToDbManager;
 import com.miniapp.account.extension.ExtensionUtil;
@@ -63,7 +63,6 @@ public class AccountMainActivity extends BaseActivity {
 
     private ListView mContentsList = null;
     private AccountCursorAdapter mAdapter = null;
-    private AccountItemDb databaseHelper = null;
     private SwipeRefreshLayout swipeRefresh = null;
     private Cursor cursor = null;
 
@@ -135,17 +134,17 @@ public class AccountMainActivity extends BaseActivity {
 
     private void makeContents() {
         LogUtil.v(TAG,"makeContents()");
-        databaseHelper = AccountItemDb.getInstance(this);
         try {
-            cursor = databaseHelper.getCursor();
+            cursor = getContentResolver().query(AccountDataDB.AccountGeneral.CONTENT_URI, null, null,
+                    null, AccountDataDB.ACCOUNT_ITEM_DATE_ASC);
             if (cursor.getCount() == 0) {
                 mContentsList.setVisibility(View.INVISIBLE);
             } else {
                 mContentsList.setVisibility(View.VISIBLE);
-                String[] from = new String[] { AccountItemDb.ACCOUNT_ITEM_USERNAME };
+                String[] from = new String[] { AccountDataDB.AccountGeneral.ACCOUNT_ITEM_USERNAME };
                 int[] to = new int[] { R.id.row_name };
                 mAdapter = new AccountCursorAdapter(this, R.layout.row_account, cursor, from,
-                        to, mListVewItemClickListener);
+                        to, mListVewItemClickListener, false);
                 mContentsList.setAdapter(mAdapter);
             }
             TextView textView = (TextView) findViewById(R.id.querySum);
@@ -170,8 +169,8 @@ public class AccountMainActivity extends BaseActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        mAccountService.syncUserNameList();
                         swipeRefresh.setRefreshing(false);
+                        makeContents();
                     }
                 });
             }
@@ -185,7 +184,8 @@ public class AccountMainActivity extends BaseActivity {
                 case R.id.btn_delete:
                     Integer mDeleteDbId = Integer.valueOf(v.getTag().toString());
                     LogUtil.d(TAG,"onClick cancel button , mDeleteDbId = " + mDeleteDbId);
-                    databaseHelper.delete(mDeleteDbId);
+                    getContentResolver().delete(AccountDataDB.AccountGeneral.CONTENT_URI,
+                            AccountDataDB.AccountGeneral.ID + " = ?",new String[]{""+mDeleteDbId});
                     refresh();
                     break;
                 default:
@@ -220,7 +220,7 @@ public class AccountMainActivity extends BaseActivity {
         }
         if(path != null && ExtensionUtil.openFile(path)) {
             XmlToDbManager importFile = new XmlToDbManager(mContext);
-            int num = importFile.start(path);
+            int num = importFile.start(path, AccountDataDB.AccountGeneral.CONTENT_URI);
             Toast.makeText(mContext, String.format(getString(R.string.toast_import_num), String.valueOf(num)), Toast.LENGTH_SHORT).show();
             refresh();
         }else {
@@ -238,7 +238,8 @@ public class AccountMainActivity extends BaseActivity {
                 break;
             case R.id.exportDb:
                 DbToXmlManager exportFile = new DbToXmlManager(mContext);
-                if(exportFile.start(path, databaseHelper.getCursor()) > 0) {
+                if(exportFile.start(path, getContentResolver().query(AccountDataDB.AccountGeneral.CONTENT_URI, null, null,
+                    null, AccountDataDB.ACCOUNT_ITEM_DATE_ASC)) > 0) {
                     Toast.makeText(mContext, path, Toast.LENGTH_SHORT).show();
                 }else {
                     LogUtil.e(TAG, "exportFile failed.");
@@ -334,7 +335,7 @@ public class AccountMainActivity extends BaseActivity {
                     break;
                 case R.id.nav_query:
                     intent1.setClassName(AccountConstants.ACCOUNT_PACKAGE, AccountConstants.ACTIVITY_ACCOUNT_FILTRATE);
-                    intent1.putExtra(AccountConstants.QUERY_CATEGORY, "0");
+                    intent1.putExtra(AccountConstants.QUERY_CATEGORY, "#NULL#");
                     intent1.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     mContext.startActivity(intent1);
                     break;

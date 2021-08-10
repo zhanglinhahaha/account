@@ -12,7 +12,7 @@ import android.widget.TextView;
 
 import com.miniapp.account.LogUtil;
 import com.miniapp.account.R;
-import com.miniapp.account.db.AccountItemDb;
+import com.miniapp.account.db.AccountDataDB;
 
 /**
  * Created by zl on 20-12-2.
@@ -24,12 +24,14 @@ public class AccountCursorAdapter extends SimpleCursorAdapter {
     private LayoutInflater mInflater = null;
     private View.OnClickListener mOnClickListener = null;
     private ViewHolder mViewHolder = null;
+    private boolean mPrivyType = false;
 
-    public AccountCursorAdapter(Context context, int layout, Cursor c, String[] from, int[] to, View.OnClickListener listener) {
+    public AccountCursorAdapter(Context context, int layout, Cursor c, String[] from, int[] to, View.OnClickListener listener, boolean isPrivy) {
         super(context, layout, c, from, to);
         mCursor = c;
         mContext = context;
         mOnClickListener = listener;
+        mPrivyType = isPrivy;
         mInflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
@@ -46,15 +48,15 @@ public class AccountCursorAdapter extends SimpleCursorAdapter {
         try {
             mCursor.moveToPosition(position);
 
-            String name = mCursor.getString(mCursor.getColumnIndex(AccountItemDb.ACCOUNT_ITEM_USERNAME));
-            String comment = mCursor.getString(mCursor.getColumnIndex(AccountItemDb.ACCOUNT_ITEM_COMMENT));
-            String date = mCursor.getString(mCursor.getColumnIndex(AccountItemDb.ACCOUNT_ITEM_DATE));
-            double price = mCursor.getDouble(mCursor.getColumnIndex(AccountItemDb.ACCOUNT_ITEM_PRICE));
+            final String name = mCursor.getString(mCursor.getColumnIndex(AccountDataDB.AccountGeneral.ACCOUNT_ITEM_USERNAME));
+            String comment = mCursor.getString(mCursor.getColumnIndex(AccountDataDB.AccountGeneral.ACCOUNT_ITEM_COMMENT));
+            String date = mCursor.getString(mCursor.getColumnIndex(AccountDataDB.AccountGeneral.ACCOUNT_ITEM_DATE));
+            double price = mCursor.getDouble(mCursor.getColumnIndex(AccountDataDB.AccountGeneral.ACCOUNT_ITEM_PRICE));
             //LogUtil.w(TAG, " getview pos =" + position + " ,name  = " + name + ", comment = " + comment + ", price = " + price);
             mViewHolder.txtViewName.setText(name + "\n" + price);
             mViewHolder.txtTime.setText(date);
             mViewHolder.txtComment.setText(comment);
-            final int id = mCursor.getInt(mCursor.getColumnIndex(AccountItemDb.ID));
+            final int id = mCursor.getInt(mCursor.getColumnIndex(AccountDataDB.AccountGeneral.ID));
 
             if(mOnClickListener == null) {
                 mViewHolder.btnDelete.setVisibility(View.GONE);
@@ -67,6 +69,10 @@ public class AccountCursorAdapter extends SimpleCursorAdapter {
                         Intent intent1 = new Intent();
                         intent1.setClassName(AccountConstants.ACCOUNT_PACKAGE, AccountConstants.ACTIVITY_ACCOUNT_ADD_OR_UPDATE);
                         intent1.putExtra(AccountConstants.ADD_OR_UPDATE_TYPE, id);
+                        if(mPrivyType) {
+                            intent1.putExtra(AccountConstants.PRIVATE_TYPE, 1);
+                            intent1.putExtra(AccountConstants.PRIVATE_USERNAME, name);
+                        }
                         intent1.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         mContext.startActivity(intent1);
                     }

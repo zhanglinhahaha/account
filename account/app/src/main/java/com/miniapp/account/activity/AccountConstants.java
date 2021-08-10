@@ -18,6 +18,8 @@ public class AccountConstants {
      */
     public static final String ACTIVITY_ACCOUNT_ADD_OR_UPDATE = "com.miniapp.account.activity.ui.AccountAddOrUpdateActivity";
     public static final String ADD_OR_UPDATE_TYPE = "add_or_update";
+    public static final String PRIVATE_TYPE = "private_type";
+    public static final String PRIVATE_USERNAME = "private_username";
 
     /**
      * 查询界面, 是自己选择, 还是带着用户类型的查询
@@ -25,6 +27,7 @@ public class AccountConstants {
      */
     public static final String ACTIVITY_ACCOUNT_FILTRATE = "com.miniapp.account.activity.ui.AccountFiltrateActivity";
     public static final String QUERY_CATEGORY = "query_category";
+    public static final String NULL_CATEGORY = "#NULL#";
 
     public static final String DIALOG_TYPE = "dialog_type";
     public static final String DIALOG_HINT_ONE = "dialog_hint_one";

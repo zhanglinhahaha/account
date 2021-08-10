@@ -1,7 +1,10 @@
 package com.miniapp.account.db;
 
+import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
+import android.net.Uri;
+
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserFactory;
 import java.io.File;
@@ -20,11 +23,12 @@ public class XmlToDbManager {
     private ContentValues mCv = new ContentValues();
     private ArrayList<DbItem> mDbList;
     private String mRestoreFilePath;
-    private AccountItemDb databaseHelper = null;
+    private ContentResolver mCr = null;
+    private Uri mUri = null;
 
     public XmlToDbManager(Context context){
         mCtx = context;
-        databaseHelper = AccountItemDb.getInstance(context);
+        mCr = context.getContentResolver();
         mDbList = new ArrayList<DbItem>();
     }
 
@@ -39,8 +43,9 @@ public class XmlToDbManager {
         }
     }
 
-    public int start(String path){
+    public int start(String path, Uri uri){
         mRestoreFilePath = path;
+        mUri = uri;
         int res = restore();
         deleteBackupFile();
         return res;
@@ -96,7 +101,7 @@ public class XmlToDbManager {
                             }
                             try {
                                 if(mCv.size() > 0){
-                                    databaseHelper.insert(mCv);
+                                    mCr.insert(mUri ,mCv);
                                     ++importNum;
                                 }
                             } catch (Exception e) {

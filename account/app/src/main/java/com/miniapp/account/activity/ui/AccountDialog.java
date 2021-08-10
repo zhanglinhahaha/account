@@ -19,7 +19,7 @@ import com.miniapp.account.activity.AccountConstants;
 import com.miniapp.account.activity.CategoryUtil;
 import com.miniapp.account.activity.DepositUtil;
 import com.miniapp.account.activity.LoginUtil;
-import com.miniapp.account.db.AccountItemDb;
+import com.miniapp.account.db.AccountDataDB;
 
 public class AccountDialog extends BaseActivity {
     private static final String TAG = "AccountDialog";
@@ -107,8 +107,7 @@ public class AccountDialog extends BaseActivity {
                         ActivityCollector.finishAll();
                         break;
                     case AccountConstants.DIALOG_TYPE_DELETE_ALL:
-                        AccountItemDb databaseHelper = AccountItemDb.getInstance(mContext);
-                        databaseHelper.deleteAll();
+                        getContentResolver().delete(AccountDataDB.AccountGeneral.CONTENT_URI, null, null);
                         finish();
                         break;
                     default:
