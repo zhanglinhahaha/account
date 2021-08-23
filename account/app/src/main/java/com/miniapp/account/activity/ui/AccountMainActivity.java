@@ -55,7 +55,7 @@ public class AccountMainActivity extends BaseActivity {
     private DrawerLayout mDrawerLayout = null;
     private Toolbar mToolbar = null;
     private NavigationView mNavigationView = null;
-    private FloatingActionButton mfab = null;
+    private FloatingActionButton mFab = null;
     private View mHeaderView = null;
     private CircleImageView mUserImage = null;
     private TextView mUserName = null;
@@ -76,7 +76,7 @@ public class AccountMainActivity extends BaseActivity {
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         mNavigationView = (NavigationView) findViewById(R.id.nav_view);
-        mfab = (FloatingActionButton)findViewById(R.id.fab);
+        mFab = (FloatingActionButton)findViewById(R.id.fab);
         mContentsList = (ListView) findViewById(R.id.itemList);
         swipeRefresh = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh);
         applyForPermission();
@@ -107,7 +107,7 @@ public class AccountMainActivity extends BaseActivity {
         mUserImage = (CircleImageView) mHeaderView.findViewById(R.id.icon_image);
         mUserImage.setOnClickListener(mButtonClickListener);
 
-        mfab.setOnClickListener(mButtonClickListener);
+        mFab.setOnClickListener(mButtonClickListener);
 
         swipeRefresh.setColorSchemeResources(R.color.colorPrimary);
         swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -161,14 +161,19 @@ public class AccountMainActivity extends BaseActivity {
     }
 
     private void refresh() {
-        LogUtil.v(TAG,"refresh()");
-        makeContents();
         new Thread(new Runnable() {
             @Override
             public void run() {
+                try {
+                    mContext.getContentResolver().notifyChange(AccountDataDB.AccountGeneral.CONTENT_URI, null);
+                    Thread.sleep(500);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
+                        LogUtil.v(TAG,"refresh()");
                         swipeRefresh.setRefreshing(false);
                         makeContents();
                     }

@@ -33,10 +33,8 @@ public class AccountFiltrateActivity extends BaseActivity {
     private static final String TAG = "AccountFiltrateActivity";
     private Spinner mDateSpinner = null;
     private ArrayAdapter<String> mDateAdapter;
-    private ArrayList<String> mDateList = null;
     private Spinner mNameSpinner = null;
     private ArrayAdapter<String> mNameAdapter;
-    private ArrayList<String> mNameList = null;
     private AccountService mAccountService = null;
     private Button mBtnQuery = null;
     private TextView mSumView = null;
@@ -110,13 +108,13 @@ public class AccountFiltrateActivity extends BaseActivity {
         if(mAccountService != null) {
             if(mNotPrivyType) {
                 mToolbar.setVisibility(View.GONE);
-                mDateList = mAccountService.getDateList();
+                ArrayList<String> mDateList = new ArrayList<>(mAccountService.getDateList());
                 mDateList.add(0, "all date");
                 mDateAdapter = new ArrayAdapter<String>(mContext, R.layout.spinner_item, mDateList);
                 mDateAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 mDateSpinner.setAdapter(mDateAdapter);
 
-                mNameList = mAccountService.getUserNameList();
+                ArrayList<String> mNameList = new ArrayList<>(mAccountService.getUserNameList());
                 for(int i = mNameList.size(), j = 0; i > 0; --i, ++j) {
                     String tmp = getResources().getString(R.string.not_contain) + " " + mNameList.get(j);
                     mNameList.add(tmp);
