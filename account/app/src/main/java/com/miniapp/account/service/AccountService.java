@@ -27,6 +27,7 @@ public class AccountService extends Service {
     private ArrayList<String> mUserNameList = null;
     private ArrayList<String> mDateList = null;
     private double mTotalMoney = 0;
+    private ArrayList<DataChangedCallback> mDataChangedCallbackList = new ArrayList<>();
 
     public static AccountService getService(Context ctx) {
         LogUtil.d(TAG,"getService() called, (AccountService == null)? " + (mAccountService == null));
@@ -67,6 +68,10 @@ public class AccountService extends Service {
                 }
             };
 
+    public void manualUpdate() {
+        updateDbData();
+    }
+
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         LogUtil.d(TAG, "onStartCommand: ");
@@ -101,7 +106,7 @@ public class AccountService extends Service {
         LogUtil.v(TAG, "updateDbData()");
         mUserNameList = new ArrayList<>();
         mDateList = new ArrayList<>();
-        mTotalMoney = 0;
+        double totalMoney = 0;
         Cursor cursor = null;
         try {
             cursor = getContentResolver().query(AccountDataDB.AccountGeneral.CONTENT_URI, null, null,
@@ -109,7 +114,7 @@ public class AccountService extends Service {
             int num = 0;
             if(cursor.moveToFirst()) {
                 do {
-                    mTotalMoney +=  cursor.getDouble(cursor.getColumnIndex(AccountDataDB.AccountGeneral.ACCOUNT_ITEM_PRICE));
+                    totalMoney +=  cursor.getDouble(cursor.getColumnIndex(AccountDataDB.AccountGeneral.ACCOUNT_ITEM_PRICE));
                     String username = cursor.getString(cursor.getColumnIndex(AccountDataDB.AccountGeneral.ACCOUNT_ITEM_USERNAME));
                     String date = cursor.getString(cursor.getColumnIndex(AccountDataDB.AccountGeneral.ACCOUNT_ITEM_DATE));
 
@@ -123,7 +128,14 @@ public class AccountService extends Service {
                     }
                 }while (cursor.moveToNext());
             }
-            LogUtil.i(TAG, mTotalMoney + " " + mUserNameList.size() + " " + mDateList.size() + " " + num);
+            LogUtil.i(TAG, totalMoney + " " + mUserNameList.size() + " " + mDateList.size() + " " + num);
+            if(mTotalMoney != totalMoney) {
+                mTotalMoney = totalMoney;
+                LogUtil.d(TAG, "mTotalMoney changed: " + mTotalMoney);
+                for(DataChangedCallback callback : mDataChangedCallbackList) {
+                    callback.totalMoneyChanged(mTotalMoney);
+                }
+            }
         } catch (Exception e) {
             LogUtil.e(TAG, "cursor " + e);
             e.printStackTrace();
@@ -145,5 +157,18 @@ public class AccountService extends Service {
 
     public double getTotalMoney() {
         return mTotalMoney;
+    }
+
+    public boolean setDataCallback(DataChangedCallback callback) {
+        boolean res = false;
+        if(!mDataChangedCallbackList.contains(callback)) {
+            mDataChangedCallbackList.add(callback);
+            res = true;
+        }
+        return res;
+    }
+
+    public interface DataChangedCallback{
+        void totalMoneyChanged(double money);
     }
 }

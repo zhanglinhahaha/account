@@ -129,6 +129,13 @@ public class AccountMainActivity extends BaseActivity {
             }
         });
 
+        mAccountService.setDataCallback(new AccountService.DataChangedCallback() {
+            @Override
+            public void totalMoneyChanged(double money) {
+                showRes(money);
+            }
+        });
+
         makeContents();
     }
 
@@ -147,17 +154,19 @@ public class AccountMainActivity extends BaseActivity {
                         to, mListVewItemClickListener, false);
                 mContentsList.setAdapter(mAdapter);
             }
-            TextView textView = (TextView) findViewById(R.id.querySum);
-            int totalMoney = LoginUtil.getInstance(mContext).getLimitMoney();
-            double usedMoney = AccountService.getService(mContext).getTotalMoney();
-
-            String showRes = "Used: " + String.format("%.2f", usedMoney)
-                    + "\nRemain: " + String.format("%.2f", (totalMoney- usedMoney));
-            textView.setText(showRes);
+            showRes(mAccountService.getTotalMoney());
         }catch (Exception e) {
             LogUtil.e(TAG, "cursor == null" + (cursor == null));
             e.printStackTrace();
         }
+    }
+
+    private void showRes(double usedMoney) {
+        TextView textView = (TextView) findViewById(R.id.querySum);
+        int totalMoney = LoginUtil.getInstance(mContext).getLimitMoney();
+        String showRes = "Used: " + String.format("%.2f", usedMoney)
+                + "\nRemain: " + String.format("%.2f", (totalMoney- usedMoney));
+        textView.setText(showRes);
     }
 
     private void refresh() {
@@ -165,7 +174,7 @@ public class AccountMainActivity extends BaseActivity {
             @Override
             public void run() {
                 try {
-                    mContext.getContentResolver().notifyChange(AccountDataDB.AccountGeneral.CONTENT_URI, null);
+                    mAccountService.manualUpdate();
                     Thread.sleep(500);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -191,7 +200,6 @@ public class AccountMainActivity extends BaseActivity {
                     LogUtil.d(TAG,"onClick cancel button , mDeleteDbId = " + mDeleteDbId);
                     getContentResolver().delete(AccountDataDB.AccountGeneral.CONTENT_URI,
                             AccountDataDB.AccountGeneral.ID + " = ?",new String[]{""+mDeleteDbId});
-                    refresh();
                     break;
                 default:
                     break;
